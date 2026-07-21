@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>융합과학 탐구의 전망 — 융합과학 탐구 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 융합과학 탐구</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅲ · 융합과학 탐구의 전망</div>
+      <h1 class="display">기술은 우리를<br>어디로 이끄는가</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 미래 사회와 융합과학기술</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 사회적 난제 해결</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 융합과학 탐구와 윤리</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 사회 문제와 시민참여</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 창의 융합 문제해결 프로젝트</button>
+  </nav>
+
+  <main>
+    <!-- TAB0 미래 사회와 융합과학기술 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 4차 산업혁명이 만드는 새로운 기술</div>
+        <h2 class="display">미래 사회와 융합과학기술</h2>
+        <p>디지털·바이오·물리학의 경계가 허물어지는 4차 산업혁명 시대, 서로 다른 분야가 만나 새로운 기술을 만들어 냅니다. 카드를 눌러 대표 사례를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="card-grid" id="c0-grid"></div>
+        <div class="detail-panel" id="c0-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB1 사회적 난제 해결 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 풀기 어려운 문제, 융합으로 다가서다</div>
+        <h2 class="display">융합과학기술과 사회적 난제 해결</h2>
+        <p>기후변화, 식량 부족, 자원 고갈처럼 원인이 얽혀 있는 난제는 여러 학문과 기술이 함께 힘을 모아야 풀립니다. 카드를 눌러 난제와 해결 기술을 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="card-grid" id="c1-grid"></div>
+        <div class="detail-panel" id="c1-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
+        <div class="mini-grid">
+          <div class="mini-card"><div class="mi-ico">🌾</div><h4>스마트팜</h4><p>IoT·빅데이터·클라우드·AI가 융합해 작물 생육 환경을 최적화하고 식량 생산량을 높입니다.</p></div>
+          <div class="mini-card"><div class="mi-ico">🚗</div><h4>수소연료전지차</h4><p>수소와 산소의 화학 반응으로 전기를 만들어 모터를 구동하고, 배기가스 없이 물만 배출합니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB2 융합과학 탐구와 윤리 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 새로운 기술에는 새로운 책임이 따른다</div>
+        <h2 class="display">융합과학 탐구와 윤리 — 연구 진실성의 다섯 기둥</h2>
+        <p>연구자가 지켜야 할 연구 진실성의 다섯 요소입니다. 카드를 눌러 각 요소의 의미를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="card-grid" id="c2-grid"></div>
+        <div class="detail-panel" id="c2-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">쟁점 살펴보기</div>
+            <div class="seg" id="c2-issue">
+              <button class="on" data-i="ev">전기차의 딜레마</button>
+              <button data-i="animal">동물 실험의 대안</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c2-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB3 사회 문제와 시민참여 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 전문가가 아니어도 과학에 참여할 수 있다</div>
+        <h2 class="display">사회 문제와 시민참여</h2>
+        <p>시민들은 데이터를 수집하고 공유하는 것만으로도 융합과학 탐구에 힘을 보탤 수 있습니다. 카드를 눌러 시민참여 사례를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="card-grid" id="c3-grid"></div>
+        <div class="detail-panel" id="c3-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB4 창의 융합 문제해결 프로젝트 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">Project · 안전한 인공지능의 활용 법안 만들기</div>
+        <h2 class="display">우리가 만드는 AI 안전 법안</h2>
+        <p>인공지능이 사회 곳곳에 쓰이면서 안전과 신뢰를 지키기 위한 규칙이 필요해졌습니다. 단계를 눌러 법안 제안 프로젝트의 진행 절차를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="card-grid" id="c4-grid"></div>
+        <div class="detail-panel" id="c4-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+function buildCardGrid(gridId, detailId, items) {
+  var grid = document.getElementById(gridId);
+  var detail = document.getElementById(detailId);
+  items.forEach(function (it, i) {
+    var btn = document.createElement("button");
+    btn.className = "pick-card" + (i === 0 ? " on" : "");
+    btn.innerHTML = '<div class="pc-ico">' + it.ico + '</div><div class="pc-name">' + it.name + '</div><div class="pc-sub">' + it.sub + '</div>';
+    btn.addEventListener("click", function () {
+      grid.querySelectorAll(".pick-card").forEach(function (b) { b.classList.toggle("on", b === btn); });
+      detail.innerHTML = "<h4>" + it.ico + " " + it.name + "</h4>" + it.detail;
+    });
+    grid.appendChild(btn);
+  });
+  if (items.length) { detail.innerHTML = "<h4>" + items[0].ico + " " + items[0].name + "</h4>" + items[0].detail; }
+}
+
+/* TAB0 미래 사회와 융합과학기술 */
+(function () {
+  var items = [
+    { ico: "🤖", name: "인공지능과 4차 산업혁명", sub: "디지털·바이오·물리학의 융합", detail: "인간의 학습·추론·지각 능력을 인공적으로 구현하는 인공지능은 사물인터넷, 로봇, 자율주행차 등 다양한 분야에서 상상을 현실로 만들고 있습니다. 2016년 세계경제포럼에서 언급된 <b>4차 산업혁명</b>은 기존 영역의 경계가 융합되는 기술 혁명을 의미합니다." },
+    { ico: "🚀", name: "3D 프린팅과 우주 탐사", sub: "우주에서 직접 부품을 만들다", detail: "지구에서 제작한 구조물을 우주로 운반하는 비용 문제를 해결하기 위해 천문학·항공우주공학과 3D 프린팅 기술이 융합되고 있습니다. 우주선 부품, 우주 정거장을 우주 공간에서 직접 제작할 수 있습니다." },
+    { ico: "🩺", name: "메디컬 트윈", sub: "나만의 디지털 쌍둥이", detail: "현실 속 신체를 가상 공간에 동일하게 구현한 '디지털 쌍둥이'로 시뮬레이션해 질병을 진단하고 최적의 치료법을 제공합니다. 신약 개발 임상 실험의 비용과 시간을 절감할 수 있습니다." },
+    { ico: "🚁", name: "도심항공교통(UAM)", sub: "하늘을 이용해 교통 체증 해결", detail: "지상과 상공을 연결하는 차세대 교통 체계로, 도심 상공에서 사람과 화물을 운송합니다. 충돌 회피·자율비행 기술과 전지·모터·항공 교통 체계 기술이 융합되어 있습니다." },
+    { ico: "🦾", name: "웨어러블 로봇", sub: "인간의 신체 활동을 돕다", detail: "척수 손상 환자의 재활 치료를 돕거나 산업 현장에서 무거운 물건을 지지해 주는 로봇입니다. 의료·인공지능 분야가 융합해 신체 활동을 돕는 정도를 스스로 조절합니다." }
+  ];
+  buildCardGrid("c0-grid", "c0-detail", items);
+})();
+
+/* TAB1 사회적 난제 */
+(function () {
+  var items = [
+    { ico: "🌡️", name: "기후변화", sub: "지구 전체를 위협하는 난제", detail: "산업화 이전 대비 지구 평균 기온이 1℃ 이상 올라 산불·가뭄·홍수·한파·폭염·초강력 태풍 등 기상 이변을 일으키고 있습니다. 원인이 모호하고 다양한 이해관계자가 얽혀 있어 대표적인 <b>난제</b>로 꼽힙니다." },
+    { ico: "🌾", name: "물 부족과 식량 부족", sub: "분쟁·경제 충격·이상 기후가 겹친 문제", detail: "국내외 분쟁과 정치적·사회적 불안정, 경제 충격에 따른 식량 가격 폭등, 가뭄·홍수 같은 극한 기후가 겹치며 식량자원 부족 위기가 심화되고 있습니다." },
+    { ico: "⛏️", name: "각종 자원의 고갈", sub: "한정된 자원, 늘어나는 수요", detail: "화석 연료를 비롯한 각종 자원이 곧 고갈될 위기에 처해 있어, 이를 대체할 신재생 에너지 기술 개발이 시급합니다." },
+    { ico: "🕳️", name: "싱크홀", sub: "지하수 남용이 부른 지반 붕괴", detail: "도시에서 지하수의 남용은 지반을 약화시키고 지반 내 빈 공간을 형성해 도심지 싱크홀(땅 꺼짐 현상) 문제를 일으킵니다." }
+  ];
+  buildCardGrid("c1-grid", "c1-detail", items);
+})();
+
+/* TAB2 연구 진실성 요소 + 쟁점 */
+(function () {
+  var items = [
+    { ico: "🔍", name: "객관성", sub: "선입견 없이 탐구를 설계", detail: "특정한 동기가 연구자의 수행에 영향을 미치지 않도록 선입견 없이 탐구를 설계하고 실험 결과나 데이터를 조작·왜곡하지 않아야 합니다." },
+    { ico: "🤝", name: "정직성", sub: "사실 그대로 활용하고 보고", detail: "연구의 전 과정에서 연구 자료와 데이터를 사실 그대로 활용하고 보고해야 합니다." },
+    { ico: "📂", name: "개방성", sub: "재현 가능하도록 투명하게 공개", detail: "연구 수행을 통해 얻은 데이터와 결과를 투명하게 공개해, 다른 연구자들이 재현할 수 있도록 충분한 정보를 제시해야 합니다." },
+    { ico: "⚖️", name: "공정성", sub: "친분이나 이해관계에 흔들리지 않기", detail: "연구 자원 배분, 연구 업적 평가 등에서 친분이나 이해관계에 영향을 받지 않아야 합니다." },
+    { ico: "🛡️", name: "책무성", sub: "연구 결과에 책임지기", detail: "연구 수행 과정과 연구 결과의 타당성을 입증할 수 있어야 하며, 자신의 연구에 대한 평가는 공정해야 합니다." }
+  ];
+  buildCardGrid("c2-grid", "c2-detail", items);
+
+  var issues = {
+    ev: "<b>🔌 전기차의 딜레마</b> — 전기차는 내연 기관이 없어 온실가스를 직접 배출하지 않지만, 신재생 에너지 시설이 부족하면 충전 전력을 화석 연료로 생산해야 합니다. 또한 배터리 핵심 원료인 리튬·니켈을 채굴·제련하는 과정에서 숲이 사라지고 온실가스가 배출되며, 현지 주민의 노동 착취 문제도 제기됩니다. 편리한 기술 뒤에 숨은 환경·윤리 비용을 함께 살펴야 합니다.",
+    animal: "<b>🐭 동물 실험의 대안</b> — 생명윤리를 지키기 위해 동물 실험을 대체하는 방법이 연구되고 있습니다. <b>빅데이터·인공지능 활용</b>은 화합물의 구조·독성 데이터를 학습해 신약 후보의 독성을 예측하지만 예측의 한계가 있고, <b>장기 칩(organ on a chip)</b>은 인체 장기 세포를 전자 칩에 배양해 구조와 기능을 재현하지만 장기 1개만 모사해 장기간 상호작용은 반영하기 어렵습니다."
+  };
+  document.querySelectorAll("#c2-issue button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#c2-issue button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      document.getElementById("c2-info").innerHTML = issues[b.getAttribute("data-i")];
+    });
+  });
+  document.getElementById("c2-info").innerHTML = issues.ev;
+})();
+
+/* TAB3 시민참여 사례 */
+(function () {
+  var items = [
+    { ico: "♿", name: "배리어 프리 지도", sub: "휠체어로 갈 수 있는 곳을 표시", detail: "휠체어를 타고 입장할 수 있는 상점을 시민들이 인터넷 지도에 표시해, 지체 장애인에게 유익한 이동 정보를 제공합니다." },
+    { ico: "🦉", name: "멸종위기종 모니터링", sub: "동식물 목격 정보 공유", detail: "주변에서 발견한 멸종위기종 동식물 정보를 생태 모니터링 누리집에 공유하면 생물다양성 보존 연구에 도움이 됩니다." },
+    { ico: "📡", name: "시민 과학 프로젝트", sub: "스마트폰 센서로 데이터 수집", detail: "스마트폰에 내장된 가속도 센서로 진동을 감지하는 앱처럼, 시민들이 온도·습도·미세먼지·이산화 탄소 센서를 설치해 데이터 수집 단계부터 융합과학 탐구에 참여할 수 있습니다." },
+    { ico: "🧬", name: "시민 과학 게임 — 폴드잇(Foldit)", sub: "게임으로 참여하는 단백질 연구", detail: "단백질 구조를 맞추는 퍼즐 게임 '폴드잇'에서 시민들이 찾아낸 독특한 단백질 구조가 실제 과학자들의 연구 대상이 되기도 했습니다. 전문 지식이 없어도 게임으로 과학 연구에 기여할 수 있습니다." }
+  ];
+  buildCardGrid("c3-grid", "c3-detail", items);
+})();
+
+/* TAB4 프로젝트 절차 */
+(function () {
+  var items = [
+    { ico: "🔎", name: "① 사례 조사", sub: "AI 관련 사고 · 쟁점 찾기", detail: "생활 속 인공지능 활용 사례와 함께 발생할 수 있는 편향성, 오작동, 개인정보 침해 등 실제 사고나 쟁점 사례를 조사합니다." },
+    { ico: "📜", name: "② 필요한 안전 기준 논의", sub: "무엇을 규제해야 할까", detail: "데이터 출처 공개, 설명 가능성(explainability), 책임 소재 등 인공지능을 안전하게 활용하기 위해 필요한 기준을 모둠별로 토의합니다." },
+    { ico: "✍️", name: "③ 법안 조항 작성", sub: "구체적인 조항으로 만들기", detail: "논의한 기준을 바탕으로 '제1조 목적', '제2조 정의'처럼 구체적인 법안 조항의 형태로 작성합니다." },
+    { ico: "🗳️", name: "④ 발표와 모의 표결", sub: "제안하고 검토받기", detail: "모둠별로 만든 법안을 발표하고, 다른 모둠의 질문과 피드백을 받아 조항을 보완한 뒤 모의 표결로 마무리합니다." }
+  ];
+  buildCardGrid("c4-grid", "c4-detail", items);
+})();
+
+})();
+</script>
+</body>
+</html>
