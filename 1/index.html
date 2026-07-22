@@ -77,6 +77,22 @@
           <div class="mini-card"><div class="mi-ico">🗂️</div><h4>빅데이터</h4><p>방대한 양·빠른 처리 속도·다양성과 복잡성을 특징으로 하며, 질병 원인 파악, 기후변화 대응, 우주 탐사 등에 활용됩니다.</p></div>
         </div>
       </div>
+
+      <div class="stage-card" style="margin-top:14px;">
+        <div class="stage-head" style="padding:16px 20px 0;">
+          <div class="eyebrow">심화 · 데이터가 많아지면 왜 더 믿을 만해질까?</div>
+          <h2 class="display" style="font-size:20px;">표본 크기와 큰 수의 법칙</h2>
+          <p>실제 참값은 20이지만 측정마다 오차(잡음)가 섞여 있는 상황을 가정합니다. 측정 횟수를 늘리며 평균이 참값에 가까워지는 모습을 확인해 보세요.</p>
+        </div>
+        <div class="canvas-wrap"><canvas id="c2b" width="900" height="300"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">측정 횟수(표본 크기 n)<span class="val" id="c2b-n-val">1</span></div>
+            <input type="range" id="c2b-n" min="1" max="200" step="1" value="1">
+          </div>
+        </div>
+        <div class="info-card" id="c2b-info"></div>
+      </div>
     </section>
 
     <!-- TAB3 디지털 탐구 도구의 이해와 활용 -->
@@ -201,6 +217,81 @@ function buildTimeline(trackId, detailId, items) {
     { pct: 92, name: "결론 도출 및 일반화", detail: "분석과 해석을 통해 얻은 결과를 바탕으로 <b>결론을 도출</b>하고 문제를 해결하거나 일반화합니다." }
   ];
   buildTimeline("c2-track", "c2-detail", items);
+})();
+
+/* TAB2-b 표본 크기와 큰 수의 법칙 */
+(function () {
+  var canvas = document.getElementById("c2b");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var slider = document.getElementById("c2b-n");
+  var nVal = document.getElementById("c2b-n-val");
+  var info = document.getElementById("c2b-info");
+  var TRUE_VAL = 20, SIGMA = 6;
+
+  function seededRandom(seed) {
+    var s = seed;
+    return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  }
+  function gaussian(rnd) {
+    var u1 = Math.max(1e-6, rnd()), u2 = rnd();
+    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  }
+
+  var rnd = seededRandom(42);
+  var samples = [];
+  for (var i = 0; i < 200; i++) samples.push(TRUE_VAL + gaussian(rnd) * SIGMA);
+
+  function render(n) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 60, x1 = W - 40, y0 = 30, y1 = H - 40;
+    ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("측정 횟수(n) →", (x0 + x1) / 2, y1 + 26);
+
+    var yMin = TRUE_VAL - SIGMA - 2, yMax = TRUE_VAL + SIGMA + 2;
+    function toY(v) { return y1 - ((v - yMin) / (yMax - yMin)) * (y1 - y0); }
+
+    // true value line
+    ctx.save(); ctx.strokeStyle = cssVar("--foam"); ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(x0, toY(TRUE_VAL)); ctx.lineTo(x1, toY(TRUE_VAL)); ctx.stroke(); ctx.restore();
+    ctx.font = "10px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "left";
+    ctx.fillText("참값 = " + TRUE_VAL, x0 + 4, toY(TRUE_VAL) - 6);
+
+    // individual measurement dots (faint)
+    for (var i2 = 0; i2 < n; i2++) {
+      var xx = x0 + i2 / 199 * (x1 - x0);
+      ctx.fillStyle = cssVar("--mist"); ctx.globalAlpha = 0.35;
+      ctx.beginPath(); ctx.arc(xx, toY(samples[i2]), 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // running average line
+    ctx.beginPath();
+    var runSum = 0;
+    for (var k = 0; k < n; k++) {
+      runSum += samples[k];
+      var avg = runSum / (k + 1);
+      var xxa = x0 + k / 199 * (x1 - x0);
+      var yya = toY(avg);
+      if (k === 0) ctx.moveTo(xxa, yya); else ctx.lineTo(xxa, yya);
+    }
+    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 2.5; ctx.stroke();
+  }
+
+  function update() {
+    var n = +slider.value;
+    nVal.textContent = n;
+    var sum = 0;
+    for (var i = 0; i < n; i++) sum += samples[i];
+    var avg = sum / n;
+    var se = SIGMA / Math.sqrt(n);
+    render(n);
+    info.innerHTML = "측정을 <b>" + n + "번</b> 했을 때 평균은 <b>" + avg.toFixed(2) + "</b>이고, 표준오차(평균이 참값에서 벗어날 수 있는 정도)는 <b>σ/√n ≈ " + se.toFixed(2) + "</b>입니다. 측정 횟수(표본 크기)를 늘릴수록 개별 측정의 잡음(오차)은 서로 상쇄되어, 평균값이 실제 참값(" + TRUE_VAL + ")에 점점 더 가까워집니다 — 이것이 데이터를 많이 모을수록(빅데이터) 결론의 신뢰도가 높아지는 통계적 원리입니다.";
+  }
+  slider.addEventListener("input", update);
+  update();
 })();
 
 /* TAB3 아날로그 vs 디지털 탐구 도구 */

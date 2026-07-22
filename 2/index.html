@@ -95,6 +95,12 @@
       </div>
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c4" width="900" height="360"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">장소별 측정 횟수<span class="val" id="c4-n-val">3</span></div>
+            <input type="range" id="c4-n" min="3" max="100" step="1" value="3">
+          </div>
+        </div>
         <div class="info-card" id="c4-info"></div>
       </div>
     </section>
@@ -115,6 +121,10 @@
               <button class="on" data-m="inter">내삽 (interpolation)</button>
               <button data-m="extra">외삽 (extrapolation)</button>
             </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">측정 오차(노이즈) 정도<span class="val" id="c5-noise-val">1.0</span></div>
+            <input type="range" id="c5-noise" min="0.2" max="3" step="0.1" value="1.0">
           </div>
         </div>
         <div class="info-card" id="c5-info"></div>
@@ -263,44 +273,67 @@ function buildTimeline(trackId, detailId, items) {
   var canvas = document.getElementById("c4");
   var ctx = setupCanvas(canvas);
   var W = canvas._w, H = canvas._h;
-  var data = [
-    { name: "교실", vals: [55, 57, 59], color: "--teal" },
-    { name: "과학실", vals: [61, 64, 67], color: "--coral" },
-    { name: "복도", vals: [60, 62, 64], color: "--cold" },
-    { name: "운동장", vals: [61, 63, 65], color: "--violet" }
+  var nSlider = document.getElementById("c4-n");
+  var nVal = document.getElementById("c4-n-val");
+  var places = [
+    { name: "교실", trueMean: 57, sd: 4, color: "--teal" },
+    { name: "과학실", trueMean: 64, sd: 5, color: "--coral" },
+    { name: "복도", trueMean: 62, sd: 4.5, color: "--cold" },
+    { name: "운동장", trueMean: 63, sd: 6, color: "--violet" }
   ];
   var selected = -1;
-  function avg(arr) { return arr.reduce(function (a, b) { return a + b; }, 0) / arr.length; }
 
-  function updateInfo() {
+  function seededRandom(seed) {
+    var s = seed;
+    return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  }
+  function gaussian(rnd) {
+    var u1 = Math.max(1e-6, rnd()), u2 = rnd();
+    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  }
+
+  places.forEach(function (p, idx) {
+    var rnd = seededRandom(idx * 131 + 7);
+    p.samples = [];
+    for (var i = 0; i < 100; i++) p.samples.push(p.trueMean + gaussian(rnd) * p.sd);
+  });
+
+  function stats(p, n) {
+    var arr = p.samples.slice(0, n);
+    var avg = arr.reduce(function (a, b) { return a + b; }, 0) / arr.length;
+    var se = p.sd / Math.sqrt(n);
+    return { avg: avg, se: se };
+  }
+
+  function updateInfo(n) {
     var info = document.getElementById("c4-info");
     if (selected < 0) {
-      info.innerHTML = "막대를 클릭하면 해당 장소의 평균 자기장 값을 확인할 수 있습니다. <b>평균</b>은 데이터 전체의 합을 데이터 개수로 나눈 값으로, 여러 번 측정해 평균을 내면 측정 오차를 줄일 수 있습니다.";
+      info.innerHTML = "막대를 클릭하면 해당 장소의 평균 자기장 값을 확인할 수 있습니다. 위 슬라이더로 <b>측정 횟수</b>를 늘리면 각 막대 위의 오차 막대(표준오차)가 점점 좁아지는 것을 볼 수 있습니다 — 여러 번 측정해 평균을 내면 측정 오차를 줄일 수 있습니다.";
     } else {
-      var d = data[selected];
-      info.innerHTML = "<b>" + d.name + "</b> — 측정값 " + d.vals.join(", ") + " μT · 평균 <b>" + avg(d.vals).toFixed(1) + " μT</b>. 평균 자기장은 과학실이 가장 높고 교실이 가장 낮게 측정되었습니다.";
+      var p = places[selected];
+      var s = stats(p, n);
+      info.innerHTML = "<b>" + p.name + "</b> — 측정 " + n + "회 평균 <b>" + s.avg.toFixed(1) + " μT</b>, 표준오차 ± " + s.se.toFixed(2) + " μT. 측정 횟수가 늘어날수록 표준오차(σ/√n)가 줄어들어 평균값을 더 신뢰할 수 있습니다.";
     }
   }
 
   canvas.addEventListener("click", function (e) {
     var rect = canvas.getBoundingClientRect();
     var mx = e.clientX - rect.left;
-    var n = data.length;
+    var n = places.length;
     var barW = W / n;
     var idx = Math.floor(mx / barW);
-    if (idx >= 0 && idx < n) { selected = idx; updateInfo(); draw(); }
+    if (idx >= 0 && idx < n) { selected = idx; updateInfo(+nSlider.value); draw(+nSlider.value); }
   });
 
-  function draw() {
+  function draw(n) {
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = cssVar("--panel");
     ctx.fillRect(0, 0, W, H);
-    var n = data.length;
+    var m = places.length;
     var padTop = 30, padBot = 50, maxVal = 75;
     var chartH = H - padTop - padBot;
-    var barW = W / n;
+    var barW = W / m;
 
-    // gridlines
     ctx.strokeStyle = cssVar("--line");
     ctx.lineWidth = 1;
     for (var g = 0; g <= 75; g += 25) {
@@ -312,39 +345,55 @@ function buildTimeline(trackId, detailId, items) {
       ctx.fillText(g, 34, gy + 3);
     }
 
-    data.forEach(function (d, i) {
-      var a = avg(d.vals);
-      var bh = (a / maxVal) * chartH;
+    places.forEach(function (p, i) {
+      var s = stats(p, n);
+      var bh = (s.avg / maxVal) * chartH;
       var bx = i * barW + barW * 0.22;
       var bw = barW * 0.56;
       var by = padTop + chartH - bh;
       ctx.save();
       ctx.globalAlpha = (selected === -1 || selected === i) ? 1 : 0.35;
-      ctx.fillStyle = cssVar(d.color);
+      ctx.fillStyle = cssVar(p.color);
       ctx.fillRect(bx, by, bw, bh);
       if (selected === i) {
         ctx.strokeStyle = cssVar("--foam");
         ctx.lineWidth = 2;
         ctx.strokeRect(bx, by, bw, bh);
       }
+      // error bar (standard error)
+      var seH = (s.se / maxVal) * chartH;
+      ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 1.5;
+      var ex = bx + bw / 2;
+      ctx.beginPath(); ctx.moveTo(ex, by - seH); ctx.lineTo(ex, by + seH); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ex - 6, by - seH); ctx.lineTo(ex + 6, by - seH); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ex - 6, by + seH); ctx.lineTo(ex + 6, by + seH); ctx.stroke();
       ctx.restore();
+
       ctx.fillStyle = cssVar("--foam");
       ctx.font = "700 11px Segoe UI, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(a.toFixed(1), bx + bw / 2, by - 8);
+      ctx.fillText(s.avg.toFixed(1), bx + bw / 2, by - seH - 10);
       ctx.fillStyle = cssVar("--mist");
       ctx.font = "12px Segoe UI, sans-serif";
-      ctx.fillText(d.name, bx + bw / 2, H - padBot + 20);
+      ctx.fillText(p.name, bx + bw / 2, H - padBot + 20);
     });
 
     ctx.fillStyle = cssVar("--mist");
     ctx.font = "11px Segoe UI, sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText("평균 자기장 (μT)", 12, 16);
+    ctx.fillText("평균 자기장 (μT) · 오차 막대 = 표준오차", 12, 16);
   }
-  updateInfo();
-  draw();
-  window.addEventListener("resize", draw);
+
+  nSlider.addEventListener("input", function () {
+    var n = +nSlider.value;
+    nVal.textContent = n;
+    draw(n);
+    updateInfo(n);
+  });
+
+  updateInfo(3);
+  draw(3);
+  window.addEventListener("resize", function () { draw(+nSlider.value); });
 })();
 
 /* TAB5 내삽/외삽 canvas */
@@ -353,6 +402,8 @@ function buildTimeline(trackId, detailId, items) {
   var ctx = setupCanvas(canvas);
   var W = canvas._w, H = canvas._h;
   var mode = "inter";
+  var noiseSlider = document.getElementById("c5-noise");
+  var noiseVal = document.getElementById("c5-noise-val");
 
   var pts = [];
   for (var i = 0; i <= 8; i++) {
@@ -369,17 +420,24 @@ function buildTimeline(trackId, detailId, items) {
       draw();
     });
   });
+  noiseSlider.addEventListener("input", function () {
+    noiseVal.textContent = (+noiseSlider.value).toFixed(1);
+    updateInfo();
+    draw();
+  });
 
   function updateInfo() {
     var info = document.getElementById("c5-info");
+    var noise = +noiseSlider.value;
     if (mode === "inter") {
-      info.innerHTML = "<b>내삽(interpolation)</b> — 측정한 데이터 <b>범위 안</b>의 빈 구간을 예측합니다. 주변 관측값을 활용하므로 외삽보다 정확도가 높습니다. 예) 일기도의 등압선 · 등온선 그리기, 의료 영상 처리.";
+      info.innerHTML = "<b>내삽(interpolation)</b> — 측정한 데이터 <b>범위 안</b>의 빈 구간을 예측합니다. 주변 관측값을 활용하므로 외삽보다 정확도가 높습니다(불확실성 구간이 좁음). 측정 오차 수준을 " + noise.toFixed(1) + "배로 조절해 봐도, 예측 구간의 불확실성(음영)이 크게 넓어지지 않는 것을 확인할 수 있습니다. 예) 일기도의 등압선 · 등온선 그리기, 의료 영상 처리.";
     } else {
-      info.innerHTML = "<b>외삽(extrapolation)</b> — 측정한 데이터의 <b>바깥 범위</b>를 예측합니다. 데이터 범위를 벗어난 예측이라 정확도가 낮아질 수 있지만, 인공지능과 빅데이터의 발달로 정확도가 높아지고 있습니다. 예) 기후변화 예측, 해양 쓰레기 이동 예측.";
+      info.innerHTML = "<b>외삽(extrapolation)</b> — 측정한 데이터의 <b>바깥 범위</b>를 예측합니다. 데이터에서 멀어질수록 불확실성(음영 폭)이 빠르게 넓어집니다. 측정 오차 수준을 " + noise.toFixed(1) + "배로 늘리면 이 불확실성이 더욱 커집니다. 인공지능과 빅데이터의 발달로 정확도가 높아지고 있지만, 여전히 내삽보다 불확실성이 큽니다. 예) 기후변화 예측, 해양 쓰레기 이동 예측.";
     }
   }
 
   function draw() {
+    var noise = +noiseSlider.value;
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = cssVar("--panel");
     ctx.fillRect(0, 0, W, H);
@@ -390,6 +448,7 @@ function buildTimeline(trackId, detailId, items) {
     function toPx(p) {
       return { x: padL + (p.x / maxX) * chartW, y: padT + chartH - (p.y / maxY) * chartH };
     }
+    function toPxY(v) { return padT + chartH - (v / maxY) * chartH; }
 
     ctx.strokeStyle = cssVar("--line");
     ctx.lineWidth = 1;
@@ -398,6 +457,27 @@ function buildTimeline(trackId, detailId, items) {
     var known = pts.filter(function (p) { return mode === "inter" ? (p.x <= 2 || p.x >= 6) : p.x <= 6; });
     var gapStart, gapEnd;
     if (mode === "inter") { gapStart = 2; gapEnd = 6; } else { gapStart = 6; gapEnd = 10; }
+    var nearestKnownX = mode === "inter" ? (gapStart + gapEnd) / 2 : gapStart;
+
+    // uncertainty band: widens with distance from known data, much faster for extrapolation
+    ctx.beginPath();
+    var predPts = pts.filter(function (p) { return p.x >= gapStart - 0.01 && p.x <= gapEnd + 0.01; });
+    var upper = [], lower = [];
+    predPts.forEach(function (p) {
+      var dist = mode === "inter" ? Math.min(Math.abs(p.x - gapStart), Math.abs(p.x - gapEnd)) : (p.x - gapStart);
+      var growth = mode === "inter" ? 0.35 : 0.9;
+      var band = noise * (0.15 + growth * dist);
+      upper.push({ x: p.x, y: p.y + band });
+      lower.push({ x: p.x, y: p.y - band });
+    });
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath();
+    upper.forEach(function (p, i) { var px = toPx(p); if (i === 0) ctx.moveTo(px.x, px.y); else ctx.lineTo(px.x, px.y); });
+    for (var i2 = lower.length - 1; i2 >= 0; i2--) { var px2 = toPx(lower[i2]); ctx.lineTo(px2.x, px2.y); }
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
 
     // known points
     ctx.fillStyle = cssVar("--teal");
@@ -413,11 +493,9 @@ function buildTimeline(trackId, detailId, items) {
     ctx.lineWidth = 2;
     ctx.beginPath();
     var first = true;
-    pts.forEach(function (p) {
-      if (p.x >= gapStart - 0.01 && p.x <= gapEnd + 0.01) {
-        var px = toPx(p);
-        if (first) { ctx.moveTo(px.x, px.y); first = false; } else { ctx.lineTo(px.x, px.y); }
-      }
+    predPts.forEach(function (p) {
+      var px = toPx(p);
+      if (first) { ctx.moveTo(px.x, px.y); first = false; } else { ctx.lineTo(px.x, px.y); }
     });
     ctx.stroke();
     ctx.restore();
@@ -431,18 +509,11 @@ function buildTimeline(trackId, detailId, items) {
       }
     });
 
-    // shaded gap region
-    ctx.save();
-    ctx.globalAlpha = 0.08;
-    ctx.fillStyle = cssVar("--coral");
-    var gx1 = toPx({ x: gapStart, y: 0 }).x, gx2 = toPx({ x: gapEnd, y: 0 }).x;
-    ctx.fillRect(gx1, padT, gx2 - gx1, chartH);
-    ctx.restore();
-
     ctx.fillStyle = cssVar("--mist");
     ctx.font = "11px Segoe UI, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(mode === "inter" ? "예측 구간(내삽)" : "예측 구간(외삽)", (gx1 + gx2) / 2, padT + 16);
+    var gx1 = toPx({ x: gapStart, y: 0 }).x, gx2 = toPx({ x: gapEnd, y: 0 }).x;
+    ctx.fillText(mode === "inter" ? "예측 구간(내삽) · 음영 = 불확실성" : "예측 구간(외삽) · 음영 = 불확실성", (gx1 + gx2) / 2, padT + 16);
     ctx.textAlign = "left";
     ctx.fillStyle = cssVar("--teal");
     ctx.fillText("● 측정된 데이터", padL, H - 10);
