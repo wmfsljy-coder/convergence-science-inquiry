@@ -78,6 +78,24 @@
         </div>
       </div>
 
+      <div class="stage-head">
+        <div class="eyebrow">🔎 미션 · 데이터 종류 맞히기</div>
+        <h2 class="display" style="font-size:18px;">이 상황은 어떤 데이터에 해당할까?</h2>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c2m-data"></div>
+        <div class="seg" id="c2m-choices">
+          <button data-c="raw">데이터 원자료(1차 데이터)</button>
+          <button data-c="processed">가공된 데이터</button>
+          <button data-c="big">빅데이터</button>
+        </div>
+        <div class="toggle-row" style="margin:14px 20px;">
+          <button class="btn" id="c2m-check">정답 확인</button>
+          <button class="btn" id="c2m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c2m-info"></div>
+      </div>
+
       <div class="stage-card" style="margin-top:14px;">
         <div class="stage-head" style="padding:16px 20px 0;">
           <div class="eyebrow">심화 · 데이터가 많아지면 왜 더 믿을 만해질까?</div>
@@ -217,6 +235,55 @@ function buildTimeline(trackId, detailId, items) {
     { pct: 92, name: "결론 도출 및 일반화", detail: "분석과 해석을 통해 얻은 결과를 바탕으로 <b>결론을 도출</b>하고 문제를 해결하거나 일반화합니다." }
   ];
   buildTimeline("c2-track", "c2-detail", items);
+})();
+
+/* TAB2 미션 — 데이터 종류 맞히기 */
+(function () {
+  var qa = [
+    { txt: "온도계로 직접 측정한, 아직 아무 처리도 하지 않은 기온 기록", key: "raw" },
+    { txt: "설문 응답 원자료를 항목별로 정리해 평균과 그래프로 표현한 결과", key: "processed" },
+    { txt: "전국 수백만 명의 스마트폰 위치 정보를 실시간으로 모아 교통 혼잡을 분석하는 자료", key: "big" },
+    { txt: "실험에서 측정기가 그대로 기록한, 가공을 거치지 않은 최초의 값", key: "raw" },
+    { txt: "여러 병원의 진료 기록을 통합해 질병 확산 패턴을 찾아내는 방대한 의료 데이터", key: "big" },
+    { txt: "원자료를 표준화하고 이상치를 제거해 분석에 바로 쓸 수 있게 만든 데이터", key: "processed" }
+  ];
+  var labels = { raw: "데이터 원자료(1차 데이터)", processed: "가공된 데이터", big: "빅데이터" };
+  var dataBox = document.getElementById("c2m-data");
+  var seg = document.getElementById("c2m-choices");
+  var checkBtn = document.getElementById("c2m-check");
+  var newBtn = document.getElementById("c2m-new");
+  var info = document.getElementById("c2m-info");
+  var current = null, picked = null;
+
+  function newQuestion() {
+    current = qa[Math.floor(Math.random() * qa.length)];
+    picked = null;
+    dataBox.innerHTML = current.txt;
+    seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    info.innerHTML = "";
+    info.style.color = "";
+  }
+
+  seg.querySelectorAll("button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      picked = btn.dataset.c;
+      seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === btn); });
+    });
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
+    if (picked === current.key) {
+      info.innerHTML = "✅ 정답! '" + labels[current.key] + "'에 해당합니다.";
+      info.style.color = "var(--teal)";
+    } else {
+      info.innerHTML = "❌ 틀렸습니다. 정답은 '" + labels[current.key] + "' 입니다.";
+      info.style.color = "var(--coral)";
+    }
+  });
+
+  newBtn.addEventListener("click", newQuestion);
+  newQuestion();
 })();
 
 /* TAB2-b 표본 크기와 큰 수의 법칙 */

@@ -84,6 +84,24 @@
         <div class="detail-panel" id="c3-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
         <div class="info-card">실제 사례 — 1880년부터 현재까지 <b>대기 중 이산화 탄소 농도</b>와 <b>지구 평균 기온</b>의 변화를 함께 그래프로 시각화하면, 두 데이터의 증가 추세가 거의 일치함을 한눈에 확인할 수 있습니다. 이는 이산화 탄소가 온실 효과의 주요 원인임을 보여 주는 대표적인 데이터 시각화 사례입니다.</div>
       </div>
+
+      <div class="stage-head">
+        <div class="eyebrow">🔎 미션 · 시각화 유형 맞히기</div>
+        <h2 class="display" style="font-size:18px;">이 상황에는 어떤 시각화 방법이 어울릴까?</h2>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c3m-data"></div>
+        <div class="seg" id="c3m-choices">
+          <button data-c="graph">그래프</button>
+          <button data-c="chart">차트</button>
+          <button data-c="diagram">다이어그램·지도</button>
+        </div>
+        <div class="toggle-row" style="margin:14px 20px;">
+          <button class="btn" id="c3m-check">정답 확인</button>
+          <button class="btn" id="c3m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c3m-info"></div>
+      </div>
     </section>
 
     <!-- TAB4 가설과 모형의 검증 -->
@@ -266,6 +284,55 @@ function buildTimeline(trackId, detailId, items) {
     { ico: "🗺️", name: "다이어그램 · 지도", sub: "관계와 구조를 도형으로", detail: "여러 값 사이의 관계나 뜻의 구조를 도형으로 나타낸 것으로, 줄여서 '~도(圖)'라고도 합니다. 지리적 분포를 보여줄 때는 지도를 사용합니다." }
   ];
   buildCardGrid("c3-grid", "c3-detail", items);
+})();
+
+/* TAB3 미션 — 시각화 유형 맞히기 */
+(function () {
+  var qa = [
+    { txt: "한 달 동안 매일 측정한 우리 동네 미세먼지 농도의 시간에 따른 변화 추이를 보여주고 싶다.", key: "graph" },
+    { txt: "반 학생들이 좋아하는 계절별 인원수를 한눈에 비교하고 싶다.", key: "chart" },
+    { txt: "우리 지역의 재활용 쓰레기 배출 장소와 이동 동선을 지리적으로 나타내고 싶다.", key: "diagram" },
+    { txt: "여러 나라의 연도별 이산화 탄소 배출량 증가 추세를 하나의 좌표계 위에 선으로 나타내고 싶다.", key: "graph" },
+    { txt: "생태계 먹이그물처럼 여러 생물 사이의 관계 구조를 도형과 화살표로 나타내고 싶다.", key: "diagram" },
+    { txt: "설문 응답자의 혈액형별 인원수를 막대의 크기로 비교하고 싶다.", key: "chart" }
+  ];
+  var labels = { graph: "그래프", chart: "차트", diagram: "다이어그램·지도" };
+  var dataBox = document.getElementById("c3m-data");
+  var seg = document.getElementById("c3m-choices");
+  var checkBtn = document.getElementById("c3m-check");
+  var newBtn = document.getElementById("c3m-new");
+  var info = document.getElementById("c3m-info");
+  var current = null, picked = null;
+
+  function newQuestion() {
+    current = qa[Math.floor(Math.random() * qa.length)];
+    picked = null;
+    dataBox.innerHTML = current.txt;
+    seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    info.innerHTML = "";
+    info.style.color = "";
+  }
+
+  seg.querySelectorAll("button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      picked = btn.dataset.c;
+      seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === btn); });
+    });
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
+    if (picked === current.key) {
+      info.innerHTML = "✅ 정답! '" + labels[current.key] + "'가 적합합니다.";
+      info.style.color = "var(--teal)";
+    } else {
+      info.innerHTML = "❌ 틀렸습니다. 정답은 '" + labels[current.key] + "' 입니다.";
+      info.style.color = "var(--coral)";
+    }
+  });
+
+  newBtn.addEventListener("click", newQuestion);
+  newQuestion();
 })();
 
 /* TAB4 자기장 측정 막대그래프 */
