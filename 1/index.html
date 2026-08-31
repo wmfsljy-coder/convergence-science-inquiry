@@ -24,6 +24,7 @@
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 데이터의 이해와 활용</button>
     <button class="tab-btn" data-tab="3"><span class="num">04</span> 디지털 탐구 도구의 이해와 활용</button>
     <button class="tab-btn" data-tab="4"><span class="num">05</span> 창의 융합 문제해결 프로젝트</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
   </nav>
 
   <main>
@@ -33,6 +34,8 @@
         <div class="eyebrow">01 · 서로 다른 관점이 만나 문제를 푼다</div>
         <h2 class="display">융합과학의 역할과 유용성</h2>
         <p>DNA 이중나선 구조는 X선 결정학이라는 융합적 도구로 밝혀졌습니다. 아래 네 전문가의 카드를 눌러 각자의 관점과 융합적 탐구에서의 역할을 확인해 보세요.</p>
+      
+        <span class="std-chip">12융탐01-01</span><span class="std-chip">12융탐01-02</span><span class="std-chip">12융탐01-03</span><span class="std-chip">12융탐01-04</span><div class="std-note"><b>[12융탐01-01]</b> 과학이 다양한 분야와 연계하여 인류 사회의 문제해결에 기여하였음을 이해하고, 융합적 탐구의 유용성을 설명할 수 있다.<br><b>[12융탐01-02]</b> 예술에서의 창작이나 사회과학적 탐구 과정을 이해하고, 과학적 탐구 과정과의 공통점과 차이점을 설명할 수 있다.<br><b>[12융탐01-03]</b> 과학적 탐구 과정에서 사용되는 다양한 데이터의 종류를 이해하고, 지식의 창출 과정에서 데이터가 하는 역할을 설명할 수 있다.<br><b>[12융탐01-04]</b> 인공지능을 포함한 디지털 탐구 도구나 기술의 활용 사례를 조사하고, 과학적 탐구 과정에 활용할 수 있다.</div><div class="terms"><b>융합적 탐구</b><b>데이터의 종류</b><b>디지털 탐구 도구</b></div>
       </div>
       <div class="stage-card">
         <div class="card-grid" id="c0-grid"></div>
@@ -138,6 +141,15 @@
         <div class="card-grid" id="c4-grid"></div>
         <div class="detail-panel" id="c4-detail">카드를 클릭하면 자세한 설명이 나타납니다.</div>
       </div>
+    </section>
+
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
   </main>
 </div>
@@ -383,6 +395,36 @@ function buildTimeline(trackId, detailId, items) {
   buildCardGrid("c4-grid", "c4-detail", steps);
 })();
 
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("cvg-1");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[융합과학 탐구 Ⅰ] 융합과학 탐구의 이해",
+    items: [
+      {
+            "id": "w1",
+            "label": "세 가지 탐구의 공통점",
+            "hint": "과학·예술·사회과학의 탐구 과정에서 공통으로 나타나는 단계를 하나 찾아 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w2",
+            "label": "데이터가 하는 일",
+            "hint": "고른 사례에서 데이터가 무엇을 바꾸었는지(가설을 세웠는지, 뒤집었는지) 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>

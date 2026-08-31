@@ -23,6 +23,7 @@
     <button class="tab-btn" data-tab="5"><span class="num">06</span> 결론 도출과 평가</button>
     <button class="tab-btn" data-tab="6"><span class="num">07</span> 과학적 의사소통</button>
     <button class="tab-btn" data-tab="7"><span class="num">08</span> 창의 융합 문제해결 프로젝트</button>
+    <button class="tab-btn" data-tab="8"><span class="num">09</span> 정리하기</button>
   </nav>
 
   <main>
@@ -32,6 +33,8 @@
         <div class="eyebrow">01 · 데이터에서 문제를 찾다</div>
         <h2 class="display">융합적 탐구 문제 발견</h2>
         <p>일상의 데이터와 공개된 공공 데이터를 결합하면 새로운 탐구 문제를 발견할 수 있습니다. 카드를 눌러 데이터의 원천과 활용 방법을 확인해 보세요.</p>
+      
+        <span class="std-chip">12융탐02-01</span><span class="std-chip">12융탐02-02</span><span class="std-chip">12융탐02-03</span><span class="std-chip">12융탐02-04</span><span class="std-chip">12융탐02-05</span><span class="std-chip">12융탐02-06</span><span class="std-chip">12융탐02-07</span><div class="std-note"><b>[12융탐02-01]</b> 실생활에서 직접 얻은 데이터나 공개된 데이터를 가공하여 융합적 탐구에 활용할 수 있다.<br><b>[12융탐02-02]</b> 융합적 탐구 문제해결을 위한 가설이나 모형을 고안하고, 문제를 해결할 수 있는 방법이 타당한지 검토할 수 있다.<br><b>[12융탐02-03]</b> 디지털 탐구 도구를 포함한 다양한 도구를 활용하여 데이터를 수집하고, 수집한 데이터를 정리할 수 있다.<br><b>[12융탐02-04]</b> 융합적 탐구 과정을 통해 얻은 데이터를 탐구 목적이나 맥락에 맞게 시각 자료로 표현할 수 있다.<br><b>[12융탐02-05]</b> 평균, 표준편차 등을 바탕으로 데이터의 특성을 파악하고, 이를 토대로 가설이나 모형을 검증할 수 있다.<br><b>[12융탐02-06]</b> 데이터 분석 결과를 바탕으로 결론을 도출하고 평가할 수 있다.<br><b>[12융탐02-07]</b> 다양한 표현 방법을 활용하여 융합적 탐구 문제, 과정, 결과, 결론 등을 효과적으로 발표할 수 있다.</div><div class="terms"><b>가설연역법</b><b>MBL 센서</b><b>내삽·외삽</b><b>표준편차</b></div>
       </div>
       <div class="stage-card">
         <div class="card-grid" id="c0-grid"></div>
@@ -193,6 +196,15 @@
         <div class="info-card" id="c7-info"></div>
         <div class="info-card">토의해 보기 — 두 입장의 단점을 보완할 수 있는 방안은 무엇일까요? 예) 지능형 과학실에서도 기본 실험 기능과 과학적 사고 방식을 강조하는 프로그램을 함께 운영하기.</div>
       </div>
+    </section>
+
+    <section class="tab-panel" data-panel="8" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">09 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
   </main>
 </div>
@@ -617,6 +629,42 @@ function buildTimeline(trackId, detailId, items) {
   document.getElementById("c7-info").innerHTML = data.a;
 })();
 
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("cvg-2");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[융합과학 탐구 Ⅱ] 융합과학 탐구의 과정",
+    items: [
+      {
+            "id": "w1",
+            "label": "내가 세운 가설",
+            "hint": "탐구 문제 하나를 정하고, 검증 가능한 가설로 바꿔 쓰세요.",
+            "ph": "문제: … / 가설: …"
+      },
+      {
+            "id": "w2",
+            "label": "평균만으로는 모자란 이유",
+            "hint": "같은 평균인데 성질이 다른 두 자료를 떠올려 보고, 표준편차가 왜 필요한지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "내삽과 외삽",
+            "hint": "둘 중 어느 쪽이 더 위험한지, 왜 그런지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w4",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>
