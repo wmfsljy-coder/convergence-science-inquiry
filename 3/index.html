@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>융합과학 탐구의 전망 — 융합과학 탐구 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/share.css">
 </head>
 <body>
 
@@ -21,6 +22,7 @@
     <button class="tab-btn" data-tab="3"><span class="num">04</span> 사회 문제와 시민참여</button>
     <button class="tab-btn" data-tab="4"><span class="num">05</span> 창의 융합 문제해결 프로젝트</button>
     <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
+    <button class="tab-btn" data-tab="6"><span class="num">07</span> 우리 반</button>
   </nav>
 
   <main>
@@ -147,12 +149,25 @@
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
+  
+    <!-- ===================================================================== 07 우리 반 -->
+    <section class="tab-panel" data-panel="6" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">07 · 같은 반 친구들과 나누기</div>
+        <h2 class="display">우리 반</h2>
+        <p>정리하기에 쓴 것을 우리 반에 올리고, 같은 반 친구들이 어디까지 했는지 함께 보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰고, 글까지 올릴지는 직접 고르세요.</p>
+      </div>
+      <div class="stage-card"><div id="share"></div></div>
+    </section>
+
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
 
 <script src="../assets/theme.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/share.js"></script>
 <script>
 (function () {
 "use strict";
@@ -371,6 +386,15 @@ function buildCardGrid(gridId, detailId, items) {
             "ph": ""
       }
 ]
+  });
+  window.sthShare({
+    mount: "share",
+    unit: "cvg-3",
+    unitLabel: "[융합과학 탐구 Ⅲ] 융합과학 탐구의 전망",
+    works: [
+      { id: "w1", label: "난제 하나 고르기" },
+      { id: "w2", label: "기술이 만드는 새 문제" }
+    ]
   });
 })();
 </script>
