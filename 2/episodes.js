@@ -91,7 +91,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     mount: "s1-sort",
     buckets: [{ id: "h", label: "검증할 수 있는 가설", sub: "변인 사이의 관계를 실험·측정으로 확인 가능" }, { id: "x", label: "가설로 쓰기 어려운 문장", sub: "막연하거나, 가치 판단이거나, 확인할 수 없음" }],
     items: [
-      { t: "바닥 아래가 비어 있는 방은 막힌 방보다 밤사이 온도가 더 많이 내려간다", a: "h", why: "독립변인(바닥 아래 공간)과 종속변인(온도 변화)이 분명합니다." },
+      { t: "바닥 아래가 비어 있는 방은 막힌 방보다 밤사이 온도가 더 많이 내려간다", a: "h", why: "조작 변인(바닥 아래 공간)과 종속 변인(온도 변화)이 분명합니다." },
       { t: "바깥 기온이 낮을수록 필로티 2층의 바닥 온도가 더 낮아진다", a: "h", why: "측정으로 확인할 수 있는 관계입니다." },
       { t: "바닥에 단열재를 깔면 필로티 2층의 밤사이 온도 하강이 줄어든다", a: "h", why: "단열재 유무를 바꿔 검증할 수 있습니다." },
       { t: "필로티 1층을 유리벽으로 막으면 2층 바닥 온도가 올라간다", a: "h", why: "바꾸는 것과 재는 것이 드러납니다." },
@@ -100,7 +100,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
       { t: "필로티 2층에 사는 사람은 추위를 잘 탄다", a: "x", why: "사람의 느낌에 기대어 있고, 건물 구조와의 관계를 검증하기 어렵습니다.", hint: "무엇을 바꾸고 무엇을 잴 수 있나요?" },
       { t: "건물은 언젠가 모두 무너진다", a: "x", why: "탐구 문제와 관계없고, 확인할 수 있는 조건이 없습니다." }
     ],
-    onDone: function () { window.sthMission("m1-3", true, "<span class='m-tag'>미션 완료</span>좋은 가설은 ‘무엇을 바꾸면(독립변인) 무엇이 어떻게 달라진다(종속변인)’로 쓰여 검증할 수 있습니다."); ep.clear(2); }
+    onDone: function () { window.sthMission("m1-3", true, "<span class='m-tag'>미션 완료</span>좋은 가설은 ‘무엇을 바꾸면(조작 변인) 무엇이 어떻게 달라진다(종속 변인)’로 쓰여 검증할 수 있습니다."); ep.clear(2); }
   });
   if (ep.cleared(2)) window.sthMission("m1-3", true);
 
@@ -158,7 +158,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     $("md-run").addEventListener("click", function () {
       ran = curves(); draw();
       var others = VARS.filter(function (x) { return !x.key && x.diff; }).map(function (x) { return x.t; });
-      if (!VARS[0].diff) { $("md-info").innerHTML = "두 모형의 바닥 아래 공간이 같습니다. 가설의 <b>독립변인</b>을 다르게 해야 비교할 수 있어요."; return; }
+      if (!VARS[0].diff) { $("md-info").innerHTML = "두 모형의 바닥 아래 공간이 같습니다. 가설의 <b>조작 변인</b>을 다르게 해야 비교할 수 있어요."; return; }
       if (others.length) { $("md-info").innerHTML = "온도 차이는 보이지만 <b>" + others.join(", ") + "</b>도 달라, 차이가 바닥 때문인지 알 수 없습니다. 통제 변인은 같게 두세요."; return; }
       var d = ran.a[ran.a.length - 1] - ran.b[ran.b.length - 1];
       $("md-info").innerHTML = "공정한 실험입니다. 12시간 뒤 필로티 모형(B)이 <b>" + d.toFixed(1) + " ℃</b> 더 낮습니다. 바닥 아래 공간만 달랐으니 이 차이는 바닥 때문이라고 말할 수 있습니다.";
@@ -183,7 +183,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     mount: "wk1", unitLabel: "[융합과학 탐구 Ⅱ] 이야기 ① 필로티 2층은 왜 추울까",
     items: [
       { id: "w1", label: "내가 세운 가설", hint: "탐구 문제 하나를 정하고, 검증 가능한 가설로 바꿔 쓰세요.", ph: "문제: … / 가설: …" },
-      { id: "e1b", label: "모형 실험 설계서", hint: "위 가설을 검증할 모형 실험에서 독립변인·종속변인·통제 변인을 적고, 공공 데이터를 어떻게 함께 쓸지 쓰세요." }
+      { id: "e1b", label: "모형 실험 설계서", hint: "위 가설을 검증할 모형 실험에서 조작 변인·종속 변인·통제 변인을 적고, 공공 데이터를 어떻게 함께 쓸지 쓰세요." }
     ]
   });
 })();
