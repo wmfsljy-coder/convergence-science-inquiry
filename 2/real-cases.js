@@ -27,7 +27,7 @@ window.sthLab({
       var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, d = 0;
       function draw() {
         H.paper(ctx, W, cv.H);
-        var cx = 220, cy = 145, R = 110;
+        var cx = 220, cy = 140, R = 110;
         ctx.save(); ctx.strokeStyle = H.v("--line"); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
         H.text(ctx, "진북", cx, cy - R - 8, { s: 12, w: "900", a: "center" }); H.text(ctx, "동", cx + R + 14, cy + 4, { s: 12, w: "900", a: "center" }); H.text(ctx, "서", cx - R - 14, cy + 4, { s: 12, w: "900", a: "center" });
         H.line(ctx, [[cx, cy], [cx, cy - R]], H.v("--line"), 2);
@@ -38,7 +38,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "편각", min: -20, max: 20, step: 0.1, value: 0, fmt: function (x) { return x.toFixed(1) + "°"; }, onInput: function (x) { d = x; api.changed(); draw(); } });
       api.info("nT(나노테슬라) 는 자기장의 세기 단위입니다. Y 가 음수면 자기장이 서쪽으로 기울어 있다는 뜻이에요. " + SRC
-        + "<div data-link='{\"id\":\"noaa-wmm\",\"title\":\"NOAA 자기장 계산기\",\"src\":\"미국 해양대기청 NCEI\",\"url\":\"https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml\",\"ask\":\"우리 학교의 위도·경도를 넣고 편각(Declination)을 계산해, 이 사례의 값과 비교해 오세요. 해마다 몇 분(′)씩 변한다고 나오는지도 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"noaa-wmm\",\"title\":\"NOAA 자기장 계산기\",\"src\":\"미국 해양대기청 NCEI\",\"url\":\"https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml\",\"ask\":\"우리 학교의 위도·경도를 넣고 편각(Declination)을 계산해, 이 사례의 값과 비교해 오세요. 해마다 얼마나(도 또는 분, 1° = 60′) 변한다고 나오는지도 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
@@ -58,7 +58,7 @@ window.sthLab({
     say: "“자기장은 수평으로만 놓여 있지 않고 땅속으로 비스듬히 들어가요. 같은 모형의 <b>수평 성분 H</b> 와 <b>연직 성분 Z</b> 로 <b>복각</b>(자기장이 수평면과 이루는 각)을 구해 주세요. 복각 = arctan(Z ÷ H).”",
     predict: {
       q: "우리나라에서 자기장은 수평면에 대해 어떻게 기울어 있을까요?",
-      options: ["㉠ 거의 수평이다", "㉡ 땅속으로 약 50° 기울어 있다", "㉢ 거의 수직이다"],
+      options: ["㉠ 거의 수평이다", "㉡ 땅속으로 비스듬히(수십 도) 기울어 있다", "㉢ 거의 수직이다"],
       answer: 1
     },
     task: "복각을 슬라이더로 맞추세요(± 0.5°).",
@@ -66,10 +66,10 @@ window.sthLab({
       var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, a = 20;
       function draw() {
         H.paper(ctx, W, cv.H);
-        var x0 = 80, y0 = 70, L = 230;
+        var x0 = 80, y0 = 60, L = 185;
         H.line(ctx, [[40, y0], [440, y0]], H.v("--line"), 2); H.text(ctx, "땅 (수평면)", 40, y0 - 8, { s: 11, w: "800", c: H.v("--mist") });
-        var r = a * Math.PI / 180; H.arrow(ctx, x0, y0, x0 + Math.cos(r) * L, y0 + Math.sin(r) * L * 0.75, H.v("--coral-700"), 4, 12);
-        H.text(ctx, "내가 맞춘 자기장 방향 " + a.toFixed(1) + "°", x0 + 20, y0 + 26, { s: 11.5, w: "800", c: H.v("--coral-700") });
+        var r = a * Math.PI / 180; H.arrow(ctx, x0, y0, x0 + Math.cos(r) * L, y0 + Math.sin(r) * L, H.v("--coral-700"), 4, 12);
+        H.text(ctx, "내가 맞춘 자기장 방향 " + a.toFixed(1) + "°", x0 + 140, y0 - 30, { s: 11.5, w: "800", c: H.v("--coral-700") });
         H.rows(ctx, 520, 40, [["수평 성분 H", M.H.toLocaleString() + " nT"], ["연직 성분 Z (아래로)", M.Z.toLocaleString() + " nT"], ["전체 세기 F", M.F.toLocaleString() + " nT"], ["내 답 (복각)", a.toFixed(1) + "°", null, true]], 52);
       }
       cv.canvas._redraw = draw;
