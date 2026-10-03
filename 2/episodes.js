@@ -603,7 +603,8 @@ window.sthWork({
     { key: "r3", label: "③ 학교 자기장 지도" },
     { key: "r4", label: "④ 선크림 보고서" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "네 사건을 꿰는 한 문장", hint: "문제 발견 → 수집·시각화 → 검증 → 결론·발표. 네 이야기가 탐구의 어느 단계를 보여 주는지 한 문장으로 이어 보세요." },
@@ -620,7 +621,8 @@ window.sthShare({
     { key: "r3", label: "③ 학교 자기장 지도" },
     { key: "r4", label: "④ 선크림 보고서" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "네 사건을 꿰는 한 문장" }
 });
