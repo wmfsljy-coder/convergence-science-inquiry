@@ -581,7 +581,8 @@ window.sthWork({
     { key: "r3", label: "③ 빈 병원의 두 병동" },
     { key: "r4", label: "④ 기울어진 건물의 경보" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "네 사건을 꿰는 한 문장", hint: "DNA 사진, 해변의 세 탐구, 병원 장부, 건물 센서. 네 이야기를 ‘융합’과 ‘데이터’라는 말을 넣어 한 문장으로 이어 보세요." },
@@ -598,7 +599,8 @@ window.sthShare({
     { key: "r3", label: "③ 빈 병원의 두 병동" },
     { key: "r4", label: "④ 기울어진 건물의 경보" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "네 사건을 꿰는 한 문장" }
 });
