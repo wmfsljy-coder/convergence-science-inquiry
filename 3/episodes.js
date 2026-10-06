@@ -51,7 +51,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
       { t: "현실의 신체를 가상 공간에 똑같이 구현해 질병을 진단한다", a: "tw", why: "디지털 쌍둥이의 의료 활용입니다." },
       { t: "신약 임상 시험의 비용과 시간을 줄여 준다", a: "tw", why: "가상의 몸으로 미리 시험합니다." },
       { t: "지상과 상공을 잇는 차세대 교통 체계로 도심 상공에서 사람과 화물을 나른다", a: "uam", why: "도심 항공 교통입니다." },
-      { t: "충돌 회피·자율 비행과 전지·모터 기술이 합쳐져 있다", a: "uam", why: "UAM 에 필요한 기술들입니다.", hint: "하늘을 나는 교통수단의 기술입니다." },
+      { t: "충돌 회피·자율 비행과 전지·모터 기술이 합쳐져 있다", a: "uam", why: "UAM에 필요한 기술들입니다.", hint: "하늘을 나는 교통수단의 기술입니다." },
       { t: "척수 손상 환자의 재활을 돕는다", a: "wr", why: "의료·로봇 공학의 융합입니다." },
       { t: "산업 현장에서 무거운 물건을 드는 작업자의 몸을 받쳐 준다", a: "wr", why: "입는 로봇입니다." }
     ],
@@ -87,7 +87,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
     function update() {
       draw();
       var f = first(g), ch = false;
-      $("bt-info").innerHTML = "연 " + g + "% 씩 좋아지면 " + yr + "년에 약 <b>" + E(yr, g).toFixed(0) + " Wh/kg</b>. 복리처럼 불어나므로 몇 %p 차이가 여러 해의 차이를 만듭니다.";
+      $("bt-info").innerHTML = "연 " + g + "%씩 좋아지면 " + yr + "년에 약 <b>" + E(yr, g).toFixed(0) + " Wh/kg</b>. 복리처럼 불어나므로 몇 %p 차이가 여러 해의 차이를 만듭니다.";
       if (g === 5 && yr === f && !got.a) { got.a = ch = true; }
       if (g === 3 && yr === f && !got.b) { got.b = ch = true; }
       if (ch) { window.sthState("batGot", got); mission(); }
@@ -117,7 +117,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
       function Y(c) { return y1 - Math.min(c, 40) / 40 * (y1 - y0); }
       axes(ctx, x0, y0, x1, y1);
       ctx.fillStyle = v("--green"); ctx.globalAlpha = .15; ctx.fillRect(x0, Y(20), x1 - x0, Y(10) - Y(20)); ctx.globalAlpha = 1;
-      text(ctx, "알맞은 농도 10 ~ 20 mg/L", x1, Y(20) - 6, { s: 11, w: "800", a: "right", c: v("--green-700") });
+      text(ctx, "알맞은 농도 10~20 mg/L", x1, Y(20) - 6, { s: 11, w: "800", a: "right", c: v("--green-700") });
       [0, 10, 20, 30, 40].forEach(function (c) { text(ctx, c + "", x0 - 6, Y(c) + 4, { s: 10, a: "right", c: v("--mist") }); });
       [0, 6, 12, 18, 24].forEach(function (t) { text(ctx, t + "시간", X(t), y1 + 16, { s: 10, a: "center", c: v("--mist") }); });
       ctx.strokeStyle = v("--coral"); ctx.lineWidth = 3; ctx.beginPath();
@@ -193,7 +193,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
       ctx.strokeStyle = v("--amber"); ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(x0, Y(th)); ctx.lineTo(x1, Y(th)); ctx.stroke(); ctx.setLineDash([]);
       ctx.strokeStyle = v("--brand"); ctx.lineWidth = 2.5; ctx.beginPath();
       r.arr.forEach(function (m, d) { if (d) { ctx.lineTo(X(d), Y(m + 3.5 * 0)); } else ctx.moveTo(X(d), Y(m)); }); ctx.stroke();
-      text(ctx, "흙 수분 (%) — 초록 띠: 딸기가 잘 자라는 30 ~ 45%", x0 + 6, 22, { s: 12, w: "800" });
+      text(ctx, "흙 수분 (%) — 초록 띠: 딸기가 잘 자라는 30~45%", x0 + 6, 22, { s: 12, w: "800" });
       var ok = r.mn >= 30 && r.mx <= 45;
       text(ctx, "물 준 횟수 " + r.w + "번", 640, 80, { s: 14, w: "900" });
       text(ctx, "가장 낮을 때 " + r.mn.toFixed(1) + "%", 640, 116, { s: 13, w: "800", c: r.mn >= 30 ? v("--green-700") : v("--rose-700") });
@@ -237,7 +237,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
     }
     function update() {
       draw();
-      $("h2-info").innerHTML = "2H₂ + O₂ → 2H₂O. 수소 분자 2개(4 g)가 물 분자 2개(36 g)가 되므로, 수소 1 kg 을 쓰면 물이 약 9 kg 나옵니다. 수소 " + k.toFixed(1) + " kg → " + (k * 100).toFixed(0) + " km.";
+      $("h2-info").innerHTML = "2H₂ + O₂ → 2H₂O. 수소 분자 2개(4 g)가 물 분자 2개(36 g)가 되므로, 수소 1 kg을 쓰면 물이 약 9 kg 나옵니다. 수소 " + k.toFixed(1) + " kg → " + (k * 100).toFixed(0) + " km.";
       if (k * 100 >= NEED - 1e-9 && k <= 4.7 + 1e-9 && !ep.cleared(2)) {
         window.sthState("h2Best", "수소 " + k.toFixed(1) + " kg → " + (k * 100).toFixed(0) + " km, 물 약 " + (k * 9).toFixed(0) + " kg");
         window.sthMission("m2-3", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("h2Best") + ". 달리는 동안 이산화 탄소 대신 물이 나옵니다.");
@@ -378,7 +378,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
     }
     function update() {
       var b = draw();
-      $("ev-info").innerHTML = "재생 에너지 " + r + "% → 전기차는 1 km 에 약 " + (perKm(r) * 1000).toFixed(0) + " g (휘발유차 170 g). 배터리를 만들 때 더 나온 6 t 을 갚는 데 약 <b>" + (b / 10000).toFixed(1) + "만 km</b>.";
+      $("ev-info").innerHTML = "재생 에너지 " + r + "% → 전기차는 1 km에 약 " + (perKm(r) * 1000).toFixed(0) + " g (휘발유차 170 g). 배터리를 만들 때 더 나온 6 t을 갚는 데 약 <b>" + (b / 10000).toFixed(1) + "만 km</b>.";
       if (b <= 50000 && r <= 50 && !got.a) { got.a = true; got.r = r; window.sthState("evGot", got); mission(); }
     }
     function mission() {
@@ -458,7 +458,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
     }
     function update() {
       draw();
-      $("cv-info").innerHTML = "한 칸이 아무에게도 조사되지 않을 확률은 0.99 를 참여자 수만큼 곱한 값입니다. " + n + "명 → 기대 채움률 <b>" + (cov(n) * 100).toFixed(1) + "%</b>. 사람이 늘수록 이미 조사된 칸과 겹치는 일이 많아져 채움률이 천천히 오릅니다.";
+      $("cv-info").innerHTML = "한 칸이 아무에게도 조사되지 않을 확률은 0.99를 참여자 수만큼 곱한 값입니다. " + n + "명 → 기대 채움률 <b>" + (cov(n) * 100).toFixed(1) + "%</b>. 사람이 늘수록 이미 조사된 칸과 겹치는 일이 많아져 채움률이 천천히 오릅니다.";
       if (cov(n) >= 0.9 && n <= 260 && !ep.cleared(1)) {
         window.sthState("cvBest", n + "명 → 지도의 " + (cov(n) * 100).toFixed(0) + "% 기대");
         window.sthMission("m4-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("cvBest") + ". 칸이 100개인데 230명 넘게 필요한 까닭은 겹침 때문입니다. 칸을 나눠 맡기면 훨씬 적은 인원으로도 채울 수 있습니다.");
@@ -501,7 +501,7 @@ function filledOrder(mount, steps) { $(mount).innerHTML = "<div class='order sor
     else window.sthOrder({ mount: "s4-order", steps: STEPS, onDone: function () { got.a = true; window.sthState("billGot", got); mission(); } });
     var GROUPS = [
       { t: "① 출시 전 관리", items: [
-        { ico: "🔐", name: "고위험 AI 사전 인증 의무화", safe: 9, burden: 7, detail: "채용·신용 평가·의료 진단에 쓰이는 AI 는 출시 전 안전성 인증을 받습니다. 안전은 크게 높아지지만 출시가 늦어집니다." },
+        { ico: "🔐", name: "고위험 AI 사전 인증 의무화", safe: 9, burden: 7, detail: "채용·신용 평가·의료 진단에 쓰이는 AI는 출시 전 안전성 인증을 받습니다. 안전은 크게 높아지지만 출시가 늦어집니다." },
         { ico: "🌱", name: "스타트업 규제 샌드박스 제공", safe: 2, burden: 1, detail: "초기 기업에 일정 기간 규제를 유예합니다. 혁신에 유리하지만 안전 점검은 느슨해집니다." } ] },
       { t: "② 투명성", items: [
         { ico: "💬", name: "AI 판단 설명 요구권 보장", safe: 6, burden: 3, detail: "이용자가 AI 판단의 근거를 설명해 달라고 요구할 수 있습니다. 신뢰를 높이지만 추가 비용이 듭니다." },
