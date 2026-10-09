@@ -73,7 +73,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     }
     function update() {
       var r = draw(), badGone = BAD.every(function (i) { return !r.k[i]; }), realKept = r.k.filter(function (x, i) { return BAD.indexOf(i) < 0 && x; }).length;
-      $("cl-info").innerHTML = "중앙값 " + med + " ℃ 에서 ±" + X + " ℃ 안의 값만 남깁니다. 오작동 값 " + (badGone ? "모두 제거" : "남음") + " · 진짜 값 " + realKept + "/22 개 남음. 평균은 튀는 값 하나에도 크게 흔들리지만, 중앙값은 잘 흔들리지 않아 기준으로 쓰기 좋습니다.";
+      $("cl-info").innerHTML = "중앙값 " + med + " ℃에서 ±" + X + " ℃ 안의 값만 남깁니다. 오작동 값 " + (badGone ? "모두 제거" : "남음") + " · 진짜 값 " + realKept + "/22 개 남음. 평균은 튀는 값 하나에도 크게 흔들리지만, 중앙값은 잘 흔들리지 않아 기준으로 쓰기 좋습니다.";
       if (badGone && realKept === 22 && !ep.cleared(1)) {
         window.sthState("clBest", "±" + X + " ℃ 기준 → 실내 평균 " + r.mi.toFixed(1) + " ℃, 바깥보다 " + (r.mi - r.mo).toFixed(1) + " ℃ 높음");
         window.sthMission("m1-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("clBest") + ". 가공한 데이터로 ‘바깥이 추운 밤에 실내 온도가 얼마나 따라 내려가나’를 물을 수 있게 되었습니다.");
@@ -158,7 +158,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     $("md-run").addEventListener("click", function () {
       ran = curves(); draw();
       var others = VARS.filter(function (x) { return !x.key && x.diff; }).map(function (x) { return x.t; });
-      if (!VARS[0].diff) { $("md-info").innerHTML = "두 모형의 바닥 아래 공간이 같습니다. 가설의 <b>조작 변인</b>을 다르게 해야 비교할 수 있어요."; return; }
+      if (!VARS[0].diff) { $("md-info").innerHTML = "두 모형의 바닥 아래 공간이 같습니다. 가설의 <b>조작 변인</b>을 다르게 해야 비교할 수 있습니다."; return; }
       if (others.length) { $("md-info").innerHTML = "온도 차이는 보이지만 <b>" + others.join(", ") + "</b>도 달라, 차이가 바닥 때문인지 알 수 없습니다. 통제 변인은 같게 두세요."; return; }
       var d = ran.a[ran.a.length - 1] - ran.b[ran.b.length - 1];
       $("md-info").innerHTML = "공정한 실험입니다. 12시간 뒤 필로티 모형(B)이 <b>" + d.toFixed(1) + " ℃</b> 더 낮습니다. 바닥 아래 공간만 달랐으니 이 차이는 바닥 때문이라고 말할 수 있습니다.";
@@ -248,7 +248,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
       { t: "필터 1~6장의 종단 속도를 나란히 비교", a: "chart", why: "항목별 크기 비교입니다.", hint: "시간 변화가 아니라 항목 사이의 크기 비교입니다." },
       { t: "우리 지역 재활용 쓰레기 배출 장소와 수거 동선", a: "diagram", why: "지리적 분포와 동선은 지도가 알맞습니다." },
       { t: "먹이 그물처럼 여러 생물 사이의 관계 구조", a: "diagram", why: "관계 구조는 다이어그램입니다." },
-      { t: "MBL 의 센서 → 기기 → 분석 → 공유로 이어지는 흐름", a: "diagram", why: "과정의 흐름과 연결은 다이어그램으로 나타냅니다." }
+      { t: "MBL의 센서 → 기기 → 분석 → 공유로 이어지는 흐름", a: "diagram", why: "과정의 흐름과 연결은 다이어그램으로 나타냅니다." }
     ],
     onDone: function () { window.sthMission("m2-3", true, "<span class='m-tag'>미션 완료</span>시각화는 데이터가 아니라 <b>목적</b>에 맞춰 고릅니다."); ep.clear(2); }
   });
@@ -306,7 +306,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
   window.sthWork({
     mount: "wk2", unitLabel: "[융합과학 탐구 Ⅱ] 이야기 ② 커피 필터 낙하 실험",
     items: [
-      { id: "e2a", label: "디지털 도구로 데이터를 모은 과정", hint: "MBL 의 네 단계를 따라 우리 모둠이 한 일을 쓰고, 측정 간격을 그렇게 정한 까닭을 쓰세요." },
+      { id: "e2a", label: "디지털 도구로 데이터를 모은 과정", hint: "MBL의 네 단계를 따라 우리 모둠이 한 일을 쓰고, 측정 간격을 그렇게 정한 까닭을 쓰세요." },
       { id: "e2b", label: "이 그래프를 고른 까닭", hint: "종단 속도를 보여 주려고 어떤 시각 자료를 골랐는지, 다른 것보다 나은 점을 쓰세요." }
     ]
   });
@@ -324,14 +324,14 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
   window.sthGate({
     gate: "g3", key: "p3", title: "선생님의 물음",
     question: "교실 55, 과학실 68 — 한 번씩 잰 두 값으로 ‘과학실 자기장이 더 세다’고 결론 내려도 될까요?",
-    options: ["㉠ 된다 — 68 이 더 크니까", "㉡ 안 된다 — 측정마다 흔들림이 있으니 여러 번 재어 퍼짐까지 봐야 한다", "㉢ 된다 — 스마트폰은 틀리지 않으니까"],
+    options: ["㉠ 된다 — 68이 더 크니까", "㉡ 안 된다 — 측정마다 흔들림이 있으니 여러 번 재어 퍼짐까지 봐야 한다", "㉢ 된다 — 스마트폰은 틀리지 않으니까"],
     onPick: function () { ep.clear(0); }
   });
 
   /* 장면 2 — 표준 편차 */
   (function () {
     var got = window.sthState("sdGot") || { a: false, b: false };
-    var FIG = "<table><tr><th></th><th>1회</th><th>2회</th><th>3회</th><th>4회</th><th>5회</th><th>평균</th><th>표준 편차</th></tr><tr><td>앱 A</td><td>50</td><td>51</td><td>49</td><td>50</td><td>50</td><td>50</td><td>약 0.7</td></tr><tr><td>앱 B</td><td>45</td><td>55</td><td>48</td><td>52</td><td>50</td><td>50</td><td>약 3.8</td></tr></table><div style=\"font-size:12px;margin:4px 0 0\">표준 편차는 (n − 1)로 나눈 표본 표준 편차입니다(n 으로 나누면 0.6, 3.4).</div>";
+    var FIG = "<table><tr><th></th><th>1회</th><th>2회</th><th>3회</th><th>4회</th><th>5회</th><th>평균</th><th>표준 편차</th></tr><tr><td>앱 A</td><td>50</td><td>51</td><td>49</td><td>50</td><td>50</td><td>50</td><td>약 0.7</td></tr><tr><td>앱 B</td><td>45</td><td>55</td><td>48</td><td>52</td><td>50</td><td>50</td><td>약 3.8</td></tr></table><div style=\"font-size:12px;margin:4px 0 0\">표준 편차는 (n − 1)로 나눈 표본 표준 편차입니다(n으로 나누면 0.6, 3.4).</div>";
     function mission() { if (got.a && got.b) { window.sthMission("m3-2", true, "<span class='m-tag'>미션 완료</span>평균이 같아도 표준 편차가 작은 쪽이 더 믿을 만합니다. 평균만으로는 데이터의 특성을 다 알 수 없습니다."); ep.clear(1); } }
     window.sthPick({
       mount: "s3-q1",
@@ -343,8 +343,8 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     });
     window.sthPick({
       mount: "s3-q2",
-      q: "앱 B 로 한 번만 재서 45 가 나왔다면, 참값이 50 이라도 이상하지 않은 까닭은?",
-      options: ["앱 B 는 표준 편차가 커서 한 번 잰 값이 평균에서 5쯤 벗어나는 일이 흔하기 때문", "45 가 참값이기 때문", "앱이 고장 났기 때문"],
+      q: "앱 B로 한 번만 재서 45가 나왔다면, 참값이 50 이라도 이상하지 않은 까닭은?",
+      options: ["앱 B는 표준 편차가 커서 한 번 잰 값이 평균에서 5쯤 벗어나는 일이 흔하기 때문", "45가 참값이기 때문", "앱이 고장 났기 때문"],
       answer: 0,
       why: ["퍼짐이 큰 측정은 한두 번의 값만으로 결론을 내리기 어렵습니다. 여러 번 재어 평균을 내야 합니다.", "한 번의 값은 참값에서 벗어날 수 있습니다.", "측정은 원래 흔들립니다. 그 정도를 표준 편차로 나타냅니다."],
       onDone: function () { got.b = true; window.sthState("sdGot", got); mission(); }
@@ -451,8 +451,8 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
 
   window.sthGate({
     gate: "g4", key: "p4", title: "첫 생각",
-    question: "측정한 세 점(0.5, 1.0, 1.5 mg/cm²)을 직선으로 이어 2.0 mg/cm² 의 차단율을 예측해도 될까요?",
-    options: ["㉠ 된다 — 점이 직선에 가깝다", "㉡ 조심해야 한다 — 측정 범위 밖이고, 차단율은 100% 를 넘을 수 없다", "㉢ 아예 예측할 수 없다"],
+    question: "측정한 세 점(0.5, 1.0, 1.5 mg/cm²)을 직선으로 이어 2.0 mg/cm²의 차단율을 예측해도 될까요?",
+    options: ["㉠ 된다 — 점이 직선에 가깝다", "㉡ 조심해야 한다 — 측정 범위 밖이고, 차단율은 100%를 넘을 수 없다", "㉢ 아예 예측할 수 없다"],
     onPick: function () { ep.clear(0); }
   });
 
@@ -536,7 +536,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
     }
     function update() {
       var p2 = draw();
-      $("sn-info").innerHTML = (md === "lin" ? "직선 모형은 측정한 세 점을 잘 지나지만, 2.0 mg/cm² 에서 <b>" + p2.toFixed(1) + "%</b> — 100% 를 넘는 말이 안 되는 값을 냅니다." : "‘100% 에 다가가는 곡선’은 바를수록 차단율이 늘지만 100% 를 넘지 않는 성질을 담고 있습니다. 2.0 mg/cm² 에서 <b>" + p2.toFixed(1) + "%</b>.") + (measured ? " 실제 측정값은 <b>98.0%</b>." : "");
+      $("sn-info").innerHTML = (md === "lin" ? "직선 모형은 측정한 세 점을 잘 지나지만, 2.0 mg/cm²에서 <b>" + p2.toFixed(1) + "%</b> — 100%를 넘는 말이 안 되는 값을 냅니다." : "‘100%에 다가가는 곡선’은 바를수록 차단율이 늘지만 100%를 넘지 않는 성질을 담고 있습니다. 2.0 mg/cm²에서 <b>" + p2.toFixed(1) + "%</b>.") + (measured ? " 실제 측정값은 <b>98.0%</b>." : "");
       if (measured && md === "exp" && Math.abs(p2 - 98) <= 1 && !ep.cleared(2)) {
         window.sthState("snBest", "곡선 모형 예측 " + p2.toFixed(1) + "% = 실제 98.0% (직선은 " + lin(2).toFixed(0) + "%)");
         window.sthMission("m4-3", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("snBest") + ". 결론을 새 측정과 현상의 성질로 평가해 모형을 골랐습니다.");
@@ -581,7 +581,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
   function finish() { window.sthState("r4", "해결 · " + (window.sthState("snBest") || "")); }
   function vs() {
     var p = window.sthState("p4") || "";
-    $("e4-vs").innerHTML = "<b>나의 첫 생각</b> " + (p || "기록 없음") + (p.indexOf("㉡") === 0 ? " — 정확했습니다." : " — 직선 외삽은 113% 라는 불가능한 값을 냈지요.") + "<br><b>나의 결론</b> " + (window.sthState("snBest") || "-");
+    $("e4-vs").innerHTML = "<b>나의 첫 생각</b> " + (p || "기록 없음") + (p.indexOf("㉡") === 0 ? " — 정확했습니다." : " — 직선 외삽은 113%라는 불가능한 값을 냈지요.") + "<br><b>나의 결론</b> " + (window.sthState("snBest") || "-");
   }
   ep.onShow(function (i) { if (i === 4) vs(); });
   if (ep.at() === 4) vs();

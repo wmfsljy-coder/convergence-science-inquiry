@@ -37,8 +37,8 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
 
   window.sthGate({
     gate: "g1", key: "p1", title: "첫 추리",
-    question: "현미경으로도 보이지 않던 DNA 의 모양을 어떻게 알아냈을까요?",
-    options: ["㉠ 더 좋은 광학 현미경을 만들어서", "㉡ X선이 분자에 부딪혀 흩어진 무늬를 물리학·수학으로 해석해서", "㉢ DNA 를 크게 부풀려서"],
+    question: "현미경으로도 보이지 않던 DNA의 모양을 어떻게 알아냈을까요?",
+    options: ["㉠ 더 좋은 광학 현미경을 만들어서", "㉡ X선이 분자에 부딪혀 흩어진 무늬를 물리학·수학으로 해석해서", "㉢ DNA를 크게 부풀려서"],
     onPick: function () { ep.clear(0); }
   });
 
@@ -74,14 +74,14 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
       text(ctx, "흰 무늬: 내 모형 · 노란 점선: 사진 51번", rx, 30, { s: 11.5, w: "800" });
       text(ctx, "층선 간격 (1 / 피치)", rx, 70, { s: 12, c: v("--mist") });
       text(ctx, spacing(P).toFixed(1) + " (목표 " + spacing(TP).toFixed(1) + ")", rx, 98, { s: 17, w: "900", c: Math.abs(P - TP) <= 0.1 + 1e-9 ? v("--green-700") : v("--ink") });
-      text(ctx, "X 의 기울기 = 피치 ÷ (π × 지름)", rx, 150, { s: 12, c: v("--mist") });
+      text(ctx, "X의 기울기 = 피치 ÷ (π × 지름)", rx, 150, { s: 12, c: v("--mist") });
       text(ctx, slope(P, D).toFixed(2) + " (목표 " + slope(TP, TD).toFixed(2) + ")", rx, 178, { s: 17, w: "900", c: Math.abs(slope(P, D) - slope(TP, TD)) <= 0.03 ? v("--green-700") : v("--ink") });
       text(ctx, "한 바퀴에 들어가는 염기쌍 ≈ 피치 ÷ 0.34 nm = " + (P / 0.34).toFixed(1), rx, 240, { s: 12, c: v("--mist") });
     }
     function update() {
       draw();
       var ch = false;
-      $("xr-info").innerHTML = "피치 " + P.toFixed(1) + " nm · 지름 " + D.toFixed(1) + " nm. 피치를 늘리면 층선이 촘촘해지고, 지름을 늘리면 X 가 옆으로 벌어집니다.";
+      $("xr-info").innerHTML = "피치 " + P.toFixed(1) + " nm · 지름 " + D.toFixed(1) + " nm. 피치를 늘리면 층선이 촘촘해지고, 지름을 늘리면 X가 옆으로 벌어집니다.";
       if (Math.abs(P - TP) <= 0.1 + 1e-9 && !got.a) { got.a = ch = true; }
       if (got.a && Math.abs(P - TP) <= 0.1 + 1e-9 && Math.abs(D - TD) <= 0.1 + 1e-9 && !got.b) { got.b = ch = true; }
       if (ch) { window.sthState("xrGot", got); mission(); }
@@ -107,7 +107,7 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
     ],
     items: [
       { t: "X선 회절 무늬로 분자의 반복 구조를 알아낸다", a: "dna", why: "물리학의 도구가 생물학의 문제를 풀었습니다." },
-      { t: "염기 A 는 T 와, G 는 C 와 짝을 이룬다는 화학 자료를 모형에 넣는다", a: "dna", why: "화학의 결합 규칙이 이중 나선의 안쪽을 채웠습니다." },
+      { t: "염기 A는 T와, G는 C와 짝을 이룬다는 화학 자료를 모형에 넣는다", a: "dna", why: "화학의 결합 규칙이 이중 나선의 안쪽을 채웠습니다." },
       { t: "교통·에너지·안전 센서 데이터를 모아 도시 문제를 푼다", a: "city", why: "데이터 과학과 도시 공학의 만남입니다." },
       { t: "시민의 이동 습관을 조사해 대중교통 노선을 바꾼다", a: "city", why: "사회과학 조사가 도시 설계에 쓰입니다." },
       { t: "개인의 유전 정보를 분석해 질병 위험을 미리 알려 준다", a: "med", why: "유전학과 정보과학이 만났습니다." },
@@ -199,7 +199,7 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
       { t: "쓰레기 문제로 마을 사람들 사이에 갈등이 생긴 까닭을 찾는다", a: "soc", why: "사회 현상의 문제 발견입니다." },
       { t: "주민 설문으로 규제에 대한 생각을 조사한다", a: "soc", why: "사회과학의 자료 수집 방법입니다." },
       { t: "조사 결과가 공정하고 윤리적인지 따져 정책 변화를 제안한다", a: "soc", why: "인문·윤리적 판단과 변화 추구입니다." },
-      { t: "모래 1 kg 에 미세 플라스틱이 몇 개인지 궁금해진다", a: "sci", why: "과학적 문제 발견입니다." },
+      { t: "모래 1 kg에 미세 플라스틱이 몇 개인지 궁금해진다", a: "sci", why: "과학적 문제 발견입니다." },
       { t: "같은 양의 모래, 같은 체로 여러 해변의 시료를 비교하도록 설계한다", a: "sci", why: "변인 통제를 포함한 실험 설계입니다." },
       { t: "현미경으로 센 입자 수를 표로 만들어 분석한다", a: "sci", why: "자료 해석 및 분석입니다." },
       { t: "측정 결과가 다시 재도 같은지 객관적으로 판단한다", a: "sci", why: "과학은 객관성을 기준으로 판단합니다." }
@@ -272,7 +272,7 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
     }
     function update() {
       var ok = draw();
-      $("art-info").innerHTML = sc === "lin" ? "값에 비례하면 1,000배 차이가 그대로 높이 차이가 되어, 큰 기둥을 3 m 로 해도 작은 기둥은 3 mm 밖에 안 됩니다." : "로그 눈금은 값이 10배 될 때마다 같은 높이만큼 올라갑니다. 1, 10, 100, 1,000 이 같은 간격으로 놓여 큰 차이도 한눈에 담깁니다.";
+      $("art-info").innerHTML = sc === "lin" ? "값에 비례하면 1,000배 차이가 그대로 높이 차이가 되어, 큰 기둥을 3 m로 해도 작은 기둥은 3 mm 밖에 안 됩니다." : "로그 눈금은 값이 10배 될 때마다 같은 높이만큼 올라갑니다. 1, 10, 100, 1,000이 같은 간격으로 놓여 큰 차이도 한눈에 담깁니다.";
       if (ok && !ep.cleared(3)) {
         window.sthState("artBest", "로그 눈금 · 가장 큰 기둥 " + top.toFixed(1) + " m");
         window.sthMission("m2-4", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("artBest") + ". 예술가는 과학의 데이터를, 과학자는 예술의 표현을 빌려 쓸 수 있습니다.");
@@ -340,7 +340,7 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
     function update() {
       draw();
       var ch = false;
-      $("sw-info").innerHTML = md === "raw" ? "원자료(사망자 수)는 출산 수가 다른 병동이나 해를 공정하게 비교하기 어렵습니다. 출산 100건당 사망률로 가공해 보세요." : (yr === "1846" ? "1846년 제1병동 사망률은 약 <b>11.4%</b>, 제2병동은 약 <b>2.8%</b> — 4배가 넘습니다." : "1847년 5월부터 의사·의대생이 염소 용액으로 손을 씻었습니다. 1848년 제1병동 사망률은 약 <b>1.3%</b> 로, 제2병동과 비슷해졌습니다.");
+      $("sw-info").innerHTML = md === "raw" ? "원자료(사망자 수)는 출산 수가 다른 병동이나 해를 공정하게 비교하기 어렵습니다. 출산 100건당 사망률로 가공해 보세요." : (yr === "1846" ? "1846년 제1병동 사망률은 약 <b>11.4%</b>, 제2병동은 약 <b>2.8%</b> — 4배가 넘습니다." : "1847년 5월부터 의사·의대생이 염소 용액으로 손을 씻었습니다. 1848년 제1병동 사망률은 약 <b>1.3%</b>로, 제2병동과 비슷해졌습니다.");
       if (md === "rate" && yr === "1846" && !got.a) { got.a = ch = true; }
       if (md === "rate" && yr === "1848" && !got.b) { got.b = ch = true; }
       if (ch) { window.sthState("swGot", got); mission(); }
@@ -411,7 +411,7 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
       $("c2b-info").innerHTML = "측정 <b>" + n + "번</b> · 평균 <b>" + avg.toFixed(2) + "</b> · 표준 오차 <b>σ/√n ≈ " + se.toFixed(2) + "</b>. 측정 횟수를 늘릴수록 개별 측정의 오차가 서로 상쇄되어 평균이 참값(" + TRUE_VAL + ")에 가까워집니다 — 데이터를 많이 모을수록 결론을 더 믿을 수 있는 까닭입니다.";
       if (se <= 1 + 1e-9 && n <= 46 && !ep.cleared(3)) {
         window.sthState("lnBest", "n = " + n + " → 표준 오차 " + se.toFixed(2) + ", 평균 " + avg.toFixed(2));
-        window.sthMission("m3-4", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("lnBest") + ". σ = 6 이면 36번 재야 표준 오차가 1 이 됩니다. 오차를 절반으로 줄이려면 4배를 더 재야 합니다.");
+        window.sthMission("m3-4", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("lnBest") + ". σ = 6이면 36번 재야 표준 오차가 1이 됩니다. 오차를 절반으로 줄이려면 4배를 더 재야 합니다.");
         ep.clear(3); ep.clear(4);
       }
     }
@@ -477,7 +477,7 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
       $("fs-info").innerHTML = "1초에 " + fs + "번 재면 기록된 흔들림은 <b>" + fa.toFixed(1) + " Hz</b>" + (fs <= 2 * F ? " — 너무 드물게 재서 실제와 다른 흔들림으로 기록됩니다(겹침 현상)." : " — 실제 진동수와 같습니다.") + " 흔들림 진동수의 <b>2배보다 자주</b> 재야 합니다.";
       if (fs > 2 * F && fs <= 6 && Math.abs(fa - F) < 1e-9 && !ep.cleared(1)) {
         window.sthState("fsBest", "1초에 " + fs + "번(" + fs + " Hz) 측정");
-        window.sthMission("m4-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("fsBest") + ". 흔들림 2 Hz 의 2배(4 Hz)보다 조금 더 자주 재면 충분합니다.");
+        window.sthMission("m4-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("fsBest") + ". 흔들림 2 Hz의 2배(4 Hz)보다 조금 더 자주 재면 충분합니다.");
         ep.clear(1);
       }
     }
