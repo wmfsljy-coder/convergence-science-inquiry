@@ -222,7 +222,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
       ctx.fillStyle = v("--coral");
       for (var k = 0; k < n; k++) { var tk = k / rate, vk = Math.tanh(9.8 * tk / 2) * 2 + gauss(r) * noise; ctx.beginPath(); ctx.arc(x0 + tk / 1.5 * (x1 - x0), y1 - vk / 2.2 * (y1 - y0), 4, 0, Math.PI * 2); ctx.fill(); }
       text(ctx, "낙하 1.5초 동안 찍힌 점 " + n + "개", x0 + 6, 22, { s: 12.5, w: "800" });
-      text(ctx, n >= 30 && rate <= 50 ? "✅ 알맞은 간격" : (n < 30 ? "점이 너무 적어 변화가 안 보임" : "너무 촘촘해 잡음이 커짐"), x1 + 10, 80, { s: 13, w: "900", c: n >= 30 && rate <= 50 ? v("--green-700") : v("--rose-700") });
+      text(ctx, n >= 30 && rate <= 50 ? "✅ 알맞은 간격" : (n < 30 ? "점이 너무 적어 변화가 안 보임" : "너무 촘촘해 계산한 속도의 잡음이 커짐"), x1 + 10, 80, { s: 13, w: "900", c: n >= 30 && rate <= 50 ? v("--green-700") : v("--rose-700") });
       return n;
     }
     function update() {
@@ -331,7 +331,7 @@ function gauss(r) { var u1 = Math.max(1e-6, r()), u2 = r(); return Math.sqrt(-2 
   /* 장면 2 — 표준 편차 */
   (function () {
     var got = window.sthState("sdGot") || { a: false, b: false };
-    var FIG = "<table><tr><th></th><th>1회</th><th>2회</th><th>3회</th><th>4회</th><th>5회</th><th>평균</th><th>표준 편차</th></tr><tr><td>앱 A</td><td>50</td><td>51</td><td>49</td><td>50</td><td>50</td><td>50</td><td>약 0.7</td></tr><tr><td>앱 B</td><td>45</td><td>55</td><td>48</td><td>52</td><td>50</td><td>50</td><td>약 3.8</td></tr></table>";
+    var FIG = "<table><tr><th></th><th>1회</th><th>2회</th><th>3회</th><th>4회</th><th>5회</th><th>평균</th><th>표준 편차</th></tr><tr><td>앱 A</td><td>50</td><td>51</td><td>49</td><td>50</td><td>50</td><td>50</td><td>약 0.7</td></tr><tr><td>앱 B</td><td>45</td><td>55</td><td>48</td><td>52</td><td>50</td><td>50</td><td>약 3.8</td></tr></table><div style=\"font-size:12px;margin:4px 0 0\">표준 편차는 (n − 1)로 나눈 표본 표준 편차입니다(n 으로 나누면 0.6, 3.4).</div>";
     function mission() { if (got.a && got.b) { window.sthMission("m3-2", true, "<span class='m-tag'>미션 완료</span>평균이 같아도 표준 편차가 작은 쪽이 더 믿을 만합니다. 평균만으로는 데이터의 특성을 다 알 수 없습니다."); ep.clear(1); } }
     window.sthPick({
       mount: "s3-q1",

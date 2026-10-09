@@ -232,8 +232,8 @@ function Phi(z) { var t = 1 / (1 + 0.3275911 * Math.abs(z / Math.SQRT2)), y = 1 
     }
     function update() {
       var e = draw();
-      $("sv-info").innerHTML = e == null ? "세 연령대 비율의 합이 100%를 넘지 않게 조절하세요." : "표본의 30~50대는 나머지 " + (100 - y - o) + "%. 설문 결과 " + e.toFixed(1) + "% (실제 " + TRUE.toFixed(1) + "%, 차이 " + Math.abs(e - TRUE).toFixed(1) + "%p). 표본이 마을을 닮아야 결과도 마을을 닮습니다.";
-      if (e != null && Math.abs(e - TRUE) <= 2 && !ep.cleared(2)) {
+      $("sv-info").innerHTML = e == null ? "세 연령대 비율의 합이 100%를 넘지 않게 조절하세요." : "표본의 30~50대는 나머지 " + (100 - y - o) + "%. 설문 결과 " + e.toFixed(1) + "% (실제 " + TRUE.toFixed(1) + "%, 차이 " + Math.abs(e - TRUE).toFixed(1) + "%p). 표본이 마을을 닮아야 결과도 마을을 닮습니다." + (e != null && Math.abs(e - TRUE) <= 2 && !(Math.abs(y - POP[0]) <= 5 && Math.abs(o - POP[2]) <= 5) ? " <b>결과는 비슷하지만 연령 구성이 마을과 다릅니다.</b> 치우침이 우연히 서로 상쇄된 것이라, 다른 질문에서는 크게 어긋날 수 있어요." : "");
+      if (e != null && Math.abs(e - TRUE) <= 2 && Math.abs(y - POP[0]) <= 5 && Math.abs(o - POP[2]) <= 5 && !ep.cleared(2)) {
         window.sthState("svBest", "10~20대 " + y + "% · 30~50대 " + (100 - y - o) + "% · 60대+ " + o + "% → " + e.toFixed(1) + "%");
         window.sthMission("m2-3", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("svBest") + ". 사회과학도 과학처럼 표본의 <b>대표성</b>을 따져 객관성을 높입니다.");
         ep.clear(2);
