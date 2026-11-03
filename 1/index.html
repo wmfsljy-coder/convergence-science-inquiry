@@ -48,8 +48,10 @@
         <section class="scene" data-title="무늬 읽기 — 나선의 치수 맞추기">
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">선배</span>“나선 모양의 분자에 X선을 쏘면 X 자 무늬가 생겨. 무늬의 <b>가로줄(층선) 간격</b>은 나선이 한 바퀴 도는 길이(피치)가 길수록 좁아지고, <b>X의 벌어진 각</b>은 피치와 지름의 비(나선이 감긴 기울기)에 따라 달라져. 모형 나선의 치수를 바꿔 사진 51번의 무늬(점선)와 겹치게 만들어 봐.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-xr" width="900" height="360"></canvas></div>
-            <div class="controls">
+            <div class="canvas-wrap stage"><canvas id="c-xr" width="900" height="360"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="xr-read"></div>
+              <div style="display:grid;gap:14px">
               <div class="ctrl-group">
                 <div class="ctrl-label">나선 한 바퀴의 길이(피치)<span class="val" id="xr-p-val">2.5 nm</span></div>
                 <input type="range" id="xr-p" min="2" max="5" step="0.1" value="2.5">
@@ -57,6 +59,8 @@
               <div class="ctrl-group">
                 <div class="ctrl-label">나선의 지름<span class="val" id="xr-d-val">1.2 nm</span></div>
                 <input type="range" id="xr-d" min="1" max="3" step="0.1" value="1.2">
+              </div>
+              <button type="button" class="btn sm" id="xr-play">⏸ 나선 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="xr-info"></div>
@@ -73,11 +77,15 @@
         <section class="scene" data-title="스마트 도시 — 데이터로 신호등 맞추기">
           <div class="story"><div class="who">🏙️</div><div class="say"><span class="name">시청 스마트 도시과 주무관</span>“융합은 지금도 도시 문제를 풀고 있어요. 교차로 센서가 모은 교통 데이터(공학), 사람들의 이동 습관(사회과학), 대기 시간 계산(수학)을 엮어 신호를 정합니다. 남북 방향에는 1분에 30대, 동서 방향에는 15대가 와요. 한 주기 90초 가운데 남북 초록불을 몇 초로 하면 운전자 전체의 평균 대기 시간이 가장 짧을까요?”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-sig" width="900" height="300"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="canvas-wrap stage"><canvas id="c-sig" width="900" height="300"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="sig-read"></div>
+              <div style="display:grid;gap:14px">
+              <div class="ctrl-group">
                 <div class="ctrl-label">남북 방향 초록불 (주기 90초)<span class="val" id="sig-g-val">45초</span></div>
                 <input type="range" id="sig-g" min="10" max="80" step="1" value="45">
+              </div>
+              <button type="button" class="btn sm" id="sig-play">⏸ 차 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="sig-info"></div>
@@ -126,7 +134,7 @@
         <section class="scene" data-title="사회학자의 설문 — 누구에게 물을까">
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">윤 교수</span>“마을 주민은 10~20대 30%, 30~50대 45%, 60대 이상 25%예요. 연령대마다 ‘해변 플라스틱 규제’ 찬성률이 달라서, 누구에게 묻느냐에 따라 결과가 바뀝니다. 학교 앞에서만 물으면 10~20대가 90%가 되어 버려요. 마을 전체의 생각을 제대로 알아낼 표본을 짜 주세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-sv" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-sv" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">표본 속 10~20대<span class="val" id="sv-y-val">90%</span></div>
@@ -145,7 +153,7 @@
         <section class="scene" data-title="미술가의 데이터 조각 — 숫자를 형태로">
           <div class="story"><div class="who">👩‍🎨</div><div class="say"><span class="name">설치 미술가 바다</span>“한 박사님 자료를 작품으로 만들고 싶어요. 해변 다섯 곳의 미세 플라스틱 양이 1부터 1,000까지 1,000배나 차이 나요. 기둥 높이로 나타낼 건데, 전시장 천장이 3 m이고 가장 작은 기둥도 관객 눈에 보이려면 30 cm는 넘어야 해요. 차이가 느껴지도록 가장 큰 기둥은 1 m 이상이었으면 하고요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-art" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-art" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">높이 눈금</div>
@@ -196,7 +204,7 @@
         <section class="scene" data-title="원자료에서 가공된 데이터로">
           <div class="story"><div class="who">👨‍⚕️</div><div class="say"><span class="name">제멜바이스</span>“병원 장부에는 해마다 출산 수와 사망자 수가 적혀 있소. 이 <b>원자료</b>를 그대로 비교하면 안 되오. 병동마다 출산 수가 다르니 <b>출산 100건당 사망률</b>로 <b>가공</b>해야 공정하게 비교할 수 있소.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-sw" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-sw" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">연도</div>
@@ -222,9 +230,10 @@
         <section class="scene" data-title="몇 번을 재야 믿을까 — 표본 크기">
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">역학 연구자</span>“측정에는 늘 오차가 섞여요. 참값이 20인 양을 오차가 있는 기구로 여러 번 재면서 평균이 어떻게 되는지 보세요. 평균이 참값에서 벗어날 수 있는 정도(표준 오차)는 σ/√n으로 줄어듭니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c2b" width="900" height="300"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="canvas-wrap stage"><canvas id="c2b" width="900" height="300"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="c2b-read"></div>
+              <div class="ctrl-group">
                 <div class="ctrl-label">측정 횟수(표본 크기 n)<span class="val" id="c2b-n-val">1</span></div>
                 <input type="range" id="c2b-n" min="1" max="200" step="1" value="1">
               </div>
@@ -269,11 +278,15 @@
         <section class="scene" data-title="얼마나 자주 재야 할까 — 표본화">
           <div class="story"><div class="who">👷</div><div class="say"><span class="name">팀장</span>“바람이 불면 건물이 <b>1초에 2번(2 Hz)</b> 흔들려요. 가속도 센서가 1초에 몇 번 재야 이 흔들림을 제대로 기록할까요? 너무 드물게 재면 엉뚱한 흔들림으로 기록되고, 너무 자주 재면 데이터가 쓸데없이 많아져 배터리와 저장 공간을 잡아먹어요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-fs" width="900" height="300"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="canvas-wrap stage"><canvas id="c-fs" width="900" height="300"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="fs-read"></div>
+              <div style="display:grid;gap:14px">
+              <div class="ctrl-group">
                 <div class="ctrl-label">1초에 재는 횟수(표본화 진동수)<span class="val" id="fs-v-val">1.5 Hz</span></div>
                 <input type="range" id="fs-v" min="1" max="12" step="0.5" value="1.5">
+              </div>
+              <button type="button" class="btn sm" id="fs-play">⏸ 건물 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="fs-info"></div>
@@ -284,9 +297,10 @@
         <section class="scene" data-title="인공지능 경보의 문턱">
           <div class="story"><div class="who">🧑‍💻</div><div class="say"><span class="name">데이터 과학자</span>“인공지능은 센서의 기울기 값을 보고 ‘정상’과 ‘위험’을 가려요. 경보를 울리는 <b>문턱값</b>을 낮추면 위험을 놓치지 않지만 헛경보가 늘고, 높이면 조용하지만 진짜 위험을 놓칠 수 있어요. 위험 놓침은 <b>1% 이하</b>, 헛경보는 <b>5% 이하</b>가 되게 정해 주세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-th" width="900" height="300"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="canvas-wrap stage"><canvas id="c-th" width="900" height="300"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="th-read"></div>
+              <div class="ctrl-group">
                 <div class="ctrl-label">경보 문턱값 (기울기)<span class="val" id="th-v-val">0.25°</span></div>
                 <input type="range" id="th-v" min="0.05" max="0.4" step="0.01" value="0.25">
               </div>
@@ -372,6 +386,7 @@
 <script src="../assets/account.js"></script>
 <script src="episodes.js"></script>
 <script src="worked.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>
