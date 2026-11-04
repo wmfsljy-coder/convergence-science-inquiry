@@ -277,8 +277,9 @@
 
         <section class="scene" data-title="얼마나 자주 재야 할까 — 표본화">
           <div class="story"><div class="who">👷</div><div class="say"><span class="name">팀장</span>“바람이 불면 건물이 <b>1초에 2번(2 Hz)</b> 흔들려요. 가속도 센서가 1초에 몇 번 재야 이 흔들림을 제대로 기록할까요? 너무 드물게 재면 엉뚱한 흔들림으로 기록되고, 너무 자주 재면 데이터가 쓸데없이 많아져 배터리와 저장 공간을 잡아먹어요.”</div></div>
+          <figure class="hero-art"><img src="img/sensor-apartment.webp" alt="오래된 10층 아파트가 선 도시 한 구역을 땅째 블록처럼 잘라 낸 모형. 옥상에 주황 불빛이 켜진 작은 센서 상자가 있고, 바깥벽 중간에도 센서가 붙어 있으며, 건물 아래 데이터 상자에서 무선 신호가 나간다. 앞면 단면에 흙과 자갈층이 보이고, 왼쪽에서 나뭇잎이 바람에 날린다." loading="lazy"><figcaption><b>튼튼한 아파트도 바람이 불면 늘 조금씩 흔들리고 있습니다</b> 높은 건물은 바람을 받으면 정해진 빠르기로 아주 작게 흔들리는데, 그 폭이 너무 작아 안에 사는 사람은 대개 느끼지 못합니다. 그래서 옥상에 가속도 센서를 달아 흔들림을 숫자로 바꾸고, 그 기록을 인터넷으로 모아 건물의 상태를 살핍니다. 센서가 1초에 몇 번 재야 흔들림을 제대로 담을 수 있는지는 아래 모형에서 직접 정해 보세요.</figcaption></figure>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-fs" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap" style="background:#e4eaf1"><canvas id="c-fs" width="900" height="640"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="fs-read"></div>
               <div style="display:grid;gap:14px">
@@ -400,5 +401,6 @@
 <script src="real-cases.js"></script>
 <script src="../assets/precheck.js"></script>
 <script src="precheck-items.js"></script>
+<script src="try-items.js"></script>
 </body>
 </html>

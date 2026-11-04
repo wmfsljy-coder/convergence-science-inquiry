@@ -68,10 +68,11 @@
 
         <section class="scene" data-title="모형 실험 — 공정한 비교 설계">
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">부장</span>“진짜 건물로는 실험할 수 없으니 상자 모형 A와 B를 만들자. 가설은 ‘바닥 아래가 비어 있으면(필로티) 방이 더 빨리 식는다’. 두 모형에서 <b>바닥 아래 공간만</b> 다르게 하고 나머지는 같게 해야 공정한 비교야.”</div></div>
+          <figure class="hero-art"><img src="img/piloti-villa.webp" alt="눈 내리는 밤의 4층 빌라를 땅째 블록으로 잘라 낸 모형. 1층은 벽 없이 기둥만 서 있는 주차장이고 찬 바람이 그 아래를 지나간다. 앞벽을 떼어 낸 2·3·4층 방에는 불이 켜져 있고, 2층 방 바닥 바로 아래는 바깥 공기다." loading="lazy"><figcaption><b>필로티 빌라 2층 바닥 아래에는 방이 아니라 바깥 공기가 있습니다</b> 필로티 건물은 1층을 벽 없이 기둥만 세워 주차장으로 씁니다. 그래서 2층 방은 바닥 아래가 데워진 방이 아니라 겨울바람이 드나드는 빈 공간입니다. 이 차이가 정말 방을 더 빨리 식게 하는지는 진짜 건물 대신 상자 모형으로 따져 보게 됩니다.</figcaption></figure>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-md" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap" style="background:#e4eaf1"><canvas id="c-md" width="900" height="620"></canvas></div>
             <div class="controls" id="md-ctrl"></div>
-            <div class="toggle-row" style="margin:0 20px 14px;"><button class="btn primary" id="md-run" type="button">❄️ 밤새 식혀 보기 (12시간)</button></div>
+            <div class="toggle-row" style="margin:0 20px 14px;"><button class="btn primary" id="md-run" type="button">❄️ 밤새 식혀 보기 (12시간)</button> <button class="btn" id="md-anim" type="button">⏸ 눈·바람 멈추기</button></div>
             <div class="info-card" id="md-info"></div>
           </div>
           <div class="mission" id="m1-4"><span class="m-tag">미션</span>바닥 아래 공간만 다른 공정한 실험을 설계해 실행하세요.</div>
@@ -383,5 +384,6 @@
 <script src="real-cases.js"></script>
 <script src="../assets/precheck.js"></script>
 <script src="precheck-items.js"></script>
+<script src="try-items.js"></script>
 </body>
 </html>

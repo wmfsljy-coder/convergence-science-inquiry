@@ -200,59 +200,121 @@ function filter(ctx, x, y, w, n) {
       var a = [], b = []; for (var t = 0; t <= 12; t += 0.25) { a.push(T(T0A, tA, t)); b.push(T(T0B, tB, t)); }
       return { a: a, b: b };
     }
-    /* 모형 상자 하나: 설계(같음/다름)가 그림에 그대로 드러난다 */
-    function box(x, gy, isB, label) {
-      var pil = isB && VARS[0].diff, thin = isB && VARS[1].diff, bigWin = isB && VARS[2].diff, warm = isB && VARS[3].diff, foam = !isB && VARS[4].diff;
-      var w = 112, h = 84, lift = pil ? 34 : 0, by = gy - lift - h, d = 14;
-      if (pil) {
-        ctx.fillStyle = "#8a8fa8"; [x + 6, x + w - 14].forEach(function (lx) { ctx.fillRect(lx, gy - lift, 8, lift); });
-        [0, 1].forEach(function (k) { K.arrow(ctx, { x: x - 22, y: gy - 10 - k * 12 }, { x: x + w + 18, y: gy - 10 - k * 12 }, "rgba(127,211,255,.75)", 1.8, 7); });
-      } else {
-        var gb = ctx.createLinearGradient(0, gy - 8, 0, gy); gb.addColorStop(0, "#6b5a48"); gb.addColorStop(1, "#3e3226");
-        ctx.fillStyle = gb; ctx.fillRect(x - 4, gy - 8, w + 8, 8);
-      }
-      var mg = ctx.createLinearGradient(x, by, x + w, by + h);
-      if (foam) { mg.addColorStop(0, "#f4f6ff"); mg.addColorStop(1, "#b9c2dc"); } else { mg.addColorStop(0, "#d9a86c"); mg.addColorStop(1, "#9a6a3a"); }
-      ctx.fillStyle = foam ? "#dfe4f5" : "#b98a55"; ctx.beginPath(); ctx.moveTo(x, by); ctx.lineTo(x + d, by - d); ctx.lineTo(x + w + d, by - d); ctx.lineTo(x + w, by); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = foam ? "#aab3cf" : "#8a5d30"; ctx.beginPath(); ctx.moveTo(x + w, by); ctx.lineTo(x + w + d, by - d); ctx.lineTo(x + w + d, by + h - d); ctx.lineTo(x + w, by + h); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = mg; ctx.fillRect(x, by, w, h);
-      var t = thin ? 4 : 10, ig = ctx.createRadialGradient(x + w / 2, by + h / 2, 4, x + w / 2, by + h / 2, w * .6);
-      ig.addColorStop(0, warm ? "rgba(255,150,80,.95)" : "rgba(255,190,120,.75)"); ig.addColorStop(1, "rgba(60,30,20,.9)");
-      ctx.fillStyle = ig; ctx.fillRect(x + t, by + t, w - 2 * t, h - 2 * t);
-      var ww = bigWin ? 44 : 22, wh = bigWin ? 34 : 18, wx = x + w / 2 - ww / 2, wy = by + h / 2 - wh / 2 - 4;
-      var wg = ctx.createLinearGradient(wx, wy, wx + ww, wy + wh); wg.addColorStop(0, "rgba(200,235,255,.85)"); wg.addColorStop(1, "rgba(90,150,220,.6)");
-      ctx.fillStyle = wg; ctx.fillRect(wx, wy, ww, wh); ctx.strokeStyle = "#e8eefc"; ctx.lineWidth = 2; ctx.strokeRect(wx, wy, ww, wh);
-      K.pill(ctx, label, x + w / 2, by - d - 8, { s: 12, a: "center", c: isB ? KC.red : KC.blue });
-      var tags = []; if (pil) tags.push("바닥 아래 빈곳"); if (thin) tags.push("얇은 벽"); if (bigWin) tags.push("큰 창"); if (warm) tags.push("처음 23 ℃"); if (foam) tags.push("스티로폼");
-      tags.forEach(function (s, i) { K.t(ctx, s, x + w / 2, gy + 16 + i * 14, { s: 10.5, a: "center", c: s === "바닥 아래 빈곳" ? KC.blue : KC.orange }); });
+    /* ── 잘라 보는 디오라마: 눈 덮인 땅 블록 위 모형 상자 A·B (앞벽과 지붕을 잘라 속을 보임) ── */
+    var DH = 412;                                         /* 위 칸(모형) 높이, 아래는 온도 그래프 */
+    var I = K.iso({ ox: 480, oy: 122, s: 0.8, L: 500, D: 170 });
+    var anim = { on: !REDUCE }, ph = 0, playT = 12;
+    pauser("md-anim", anim, ["눈·바람 멈추기", "눈·바람 보기"]);
+    function tempAt(arr, t) { var i = Math.min(arr.length - 1, Math.max(0, Math.round(t / 0.25))); return arr[i]; }
+    function T0(isB) { return isB && VARS[3].diff ? 23 : 20; }
+    function heat(T, a) {                                 /* −3 ℃ 파랑 ~ 23 ℃ 주황 */
+      var f = clamp((T + 3) / 26, 0, 1), r = Math.round(90 + 165 * f), g = Math.round(160 - 10 * f), b = Math.round(255 - 185 * f);
+      return "rgba(" + r + "," + g + "," + b + "," + a + ")";
     }
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var LW = 340;
-      K.stage(ctx, 0, 0, LW, H, "night", { seed: 55, title: "모형 실험 설계" });
-      var R = K.rng(8);
-      for (var sn = 0; sn < 26; sn++) K.glow(ctx, 10 + R() * (LW - 20), 46 + R() * 150, .9 + R(), "rgba(220,235,255,.8)", 2.4);
-      K.pill(ctx, "바깥 −3 ℃", LW - 14, 28, { s: 11.5, a: "right", c: KC.blue, box: [0, LW] });
-      var gy = 216;
-      box(22, gy, false, "모형 A"); box(186, gy, true, "모형 B");
-
-      /* ── 오른쪽: 12시간 온도 ── */
-      var RX = LW + 8;
-      K.stage(ctx, RX, 0, W - RX, H, "lab", { seed: 61, title: "두 모형의 밤사이 온도" });
-      var g = K.chart(ctx, { x: RX + 4, y: 40, w: W - RX - 100, h: H - 44, x0: 0, x1: 12, y0: -5, y1: 25, xt: 6, yt: 3, xf: function (t) { return t + "시간"; }, yf: function (t) { return t + " ℃"; }, pl: 50 });
+    function quadP(a, b, c, d, fill) { ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); }
+    function model(x0, isB, T) {
+      var y0 = 30, x1 = x0 + 150, y1 = 130, h = 84;
+      var pil = isB && VARS[0].diff, thin = isB && VARS[1].diff, bigWin = isB && VARS[2].diff, foam = !isB && VARS[4].diff;
+      var zb = pil ? 40 : 0, t = thin ? 4 : 11;
+      var wTop = foam ? "#f3f5fb" : "#d2a46a", wIn = foam ? "#e3e7f3" : "#c08a4e", wOut = foam ? "#b8c0d6" : "#93633a", wCut = foam ? "#ffffff" : "#e6c08c";
+      if (pil) {
+        var cols = [[x0 + 4, y0 + 4], [x1 - 14, y0 + 4]], fr = [[x0 + 4, y1 - 14], [x1 - 14, y1 - 14]];
+        cols.forEach(function (c) { I.box(ctx, c[0], c[1], 0, c[0] + 10, c[1] + 10, zb, "#c9ccd6", "#9aa0b2", "#7d8396"); });
+        fr.forEach(function (c) { I.box(ctx, c[0], c[1], 0, c[0] + 10, c[1] + 10, zb, "#c9ccd6", "#9aa0b2", "#7d8396"); });
+      }
+      I.box(ctx, x0, y0, zb, x1, y1, zb + 6, "#a88a66", "#e9d7bb", "#7a6248");          /* 바닥판 */
+      quadP(I.P(x0 + t, y0 + t, zb + 6), I.P(x1 - t, y0 + t, zb + 6), I.P(x1 - t, y1, zb + 6), I.P(x0 + t, y1, zb + 6), heat(T, .55));
+      I.box(ctx, x0, y0, zb + 6, x1, y0 + t, zb + 6 + h, wTop, wIn, wOut);               /* 뒷벽 */
+      var yb = y0 + t;                                     /* 뒷벽 안쪽 면: 데워진 공기와 창 */
+      quadP(I.P(x0 + t, yb, zb + 6), I.P(x1 - t, yb, zb + 6), I.P(x1 - t, yb, zb + 6 + h), I.P(x0 + t, yb, zb + 6 + h), heat(T, .32));
+      var ww = bigWin ? 70 : 34, wh = bigWin ? 44 : 24, wx = (x0 + x1) / 2 - ww / 2, wz = zb + 6 + 34;
+      var wa = I.P(wx, yb, wz), wb = I.P(wx + ww, yb, wz), wc = I.P(wx + ww, yb, wz + wh), wd = I.P(wx, yb, wz + wh);
+      var wg = ctx.createLinearGradient(wd.x, wd.y, wb.x, wb.y); wg.addColorStop(0, "#1b2a5a"); wg.addColorStop(1, "#3a5fa8");
+      quadP(wa, wb, wc, wd, wg);
+      ctx.strokeStyle = "#eef3ff"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(wa.x, wa.y); ctx.lineTo(wb.x, wb.y); ctx.lineTo(wc.x, wc.y); ctx.lineTo(wd.x, wd.y); ctx.closePath(); ctx.stroke();
+      I.box(ctx, x0, y0 + t, zb + 6, x0 + t, y1, zb + 6 + h, wTop, wCut, wIn);          /* 왼쪽 벽 (앞면 = 자른 자리) */
+      var th = I.P((x0 + x1) / 2 + 20, (y0 + y1) / 2 + 20, zb + 6);                    /* 온도계 */
+      ctx.fillStyle = "#f4f6fb"; ctx.fillRect(th.x - 3, th.y - 34, 6, 32);
+      var lv = clamp((T + 3) / 26, 0.05, 1); ctx.fillStyle = heat(T, 1); ctx.fillRect(th.x - 2, th.y - 4 - 28 * lv, 4, 28 * lv);
+      ctx.beginPath(); ctx.arc(th.x, th.y - 2, 4.5, 0, 6.283); ctx.fill();
+      I.box(ctx, x1 - t, y0 + t, zb + 6, x1, y1, zb + 6 + h, wTop, wCut, wOut);         /* 오른쪽 벽 */
+      if (pil) for (var k = 0; k < 4; k++) {               /* 기둥 사이 빈 공간으로 지나가는 찬 바람 */
+        var u = ((ph * 0.35 + k / 4) % 1), yy = y1 + 2 + (k % 2) * 10, zz = 10 + (k % 2) * 14;
+        var a = I.P(x0 - 30 + u * 190, yy, zz), b = I.P(x0 - 30 + u * 190 + 30, yy, zz);
+        K.arrow(ctx, a, b, "rgba(70,150,245,.95)", 2.4, 7);
+      }
+      return { top: I.P(x0 + 20, y0, zb + 6 + h), mid: I.P((x0 + x1) / 2, y1, zb + 6), thx: th, pil: pil };
+    }
+    function snow() {
+      var R = K.rng(17);
+      for (var i = 0; i < 46; i++) {
+        var x = R() * I.L, y = R() * I.D, z = (R() * 190 - ph * 22 * (0.6 + R() * 0.6)) % 190; if (z < 0) z += 190;
+        if (y > 22 && y < 132 && ((x > 32 && x < 198) || (x > 282 && x < 448))) continue;   /* 방 안에는 눈이 내리지 않게 */
+        var p = I.P(x, y, z + 2); ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.beginPath(); ctx.arc(p.x, p.y, 1.6, 0, 6.283); ctx.fill();
+      }
+    }
+    function drawModel() {
+      var showT = ran ? playT : 0;
+      var TA = ran ? tempAt(ran.a, showT) : T0(false), TB = ran ? tempAt(ran.b, showT) : T0(true);
+      K.studio(ctx, 0, 0, W, DH, { x: I.P(I.L, I.D, 0).x - 160, y: I.P(I.L, I.D, 0).y - 20, rx: 330, ry: 54 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      I.box(ctx, 0, 0, -16, I.L, I.D, 0, "#eef3fb", "#6b5a48", "#4f4234");               /* 눈 덮인 땅 */
+      I.face(ctx, "front", function (Lw) { ctx.fillStyle = "#f7faff"; ctx.fillRect(0, -5, Lw, 5); var R = K.rng(9); for (var i = 0; i < 70; i++) { ctx.fillStyle = R() > .5 ? "rgba(255,255,255,.15)" : "rgba(30,20,10,.25)"; ctx.fillRect(R() * Lw, -16 + R() * 11, 2, 2); } });
+      I.edges(ctx, 0, 0);
+      var A = model(40, false, TA), B = model(290, true, TB);
+      snow();
+      ctx.restore();
+      var box = [0, W];
+      I.label(ctx, 40 + 20, 30, (A.pil ? 40 : 0) + 90, "모형 A · " + TA.toFixed(1) + " ℃", -36, -26, "#bfe6ff", box);
+      I.label(ctx, 290 + 130, 30, (B.pil ? 40 : 0) + 90, "모형 B · " + TB.toFixed(1) + " ℃", 30, -30, "#ffb3bd", box);
+      if (B.pil) I.label(ctx, 290 + 150, 120, 18, "바닥 아래로 찬 바람", 40, 18, "#bfe6ff", box);
+      I.label(ctx, 290, 130, 40, "앞벽·지붕을 잘라 냄", -60, 46, "#e8ecff", box);
+      /* 두 모형이 다른 점(설계가 그대로 드러남) */
+      var dA = [], dB = [];
+      if (VARS[0].diff) dB.push("바닥 아래 빈 곳"); if (VARS[1].diff) dB.push("얇은 벽"); if (VARS[2].diff) dB.push("큰 창");
+      if (VARS[3].diff) dB.push("처음 23 ℃"); if (VARS[4].diff) dA.push("스티로폼 상자");
+      K.pill(ctx, "A만 다른 점: " + (dA.length ? dA.join(" · ") : "없음"), 22, DH - 50, { s: 11.5, c: KC.blue, box: box });
+      K.pill(ctx, "B만 다른 점: " + (dB.length ? dB.join(" · ") : "없음"), 22, DH - 24, { s: 11.5, c: KC.red, box: box });
+      K.warn(ctx, W - 14, 30, "⚠ 모형 크기·벽 두께는 보기 쉽게 과장", "right");
+      K.pill(ctx, "바깥 −3 ℃ · 눈 오는 밤", W - 14, 58, { s: 11.5, a: "right", c: KC.blue, box: box });
+      /* 큰 제목 */
+      var others = VARS.filter(function (x) { return !x.key && x.diff; }).map(function (x) { return x.t; });
+      var h1, h2;
+      if (!ran) { h1 = "모형 A와 B, 무엇이 다른가"; h2 = "설계를 고르고 밤새 식혀 보세요"; }
+      else if (playT < 12) { h1 = "밤이 깊어 간다"; h2 = playT.toFixed(1) + "시간 · A " + TA.toFixed(1) + " ℃ · B " + TB.toFixed(1) + " ℃"; }
+      else if (!VARS[0].diff) { h1 = "바닥 아래가 똑같다"; h2 = "이대로는 가설을 검증할 수 없다"; }
+      else if (others.length) { h1 = "다른 조건이 섞였다"; h2 = "차이가 바닥 탓인지 알 수 없다"; }
+      else { h1 = "바닥 아래만 다르다"; h2 = "12시간 뒤 B가 " + (TA - TB).toFixed(1) + " ℃ 더 차갑다"; }
+      K.bigText(ctx, h1, 22, 50, 27, "#ffffff"); K.bigText(ctx, h2, 22, 82, 17, "#ffd35a");
+    }
+    function drawChart() {
+      var y0 = DH + 8, h = H - y0;
+      K.stage(ctx, 0, y0, W, h, "lab", { seed: 61 });
+      K.pill(ctx, "두 모형의 밤사이 온도", 14, y0 + 22, { s: 12, c: KC.ink });
+      var g = K.chart(ctx, { x: 4, y: y0 + 28, w: W - 130, h: h - 30, x0: 0, x1: 12, y0: -5, y1: 25, xt: 6, yt: 3, pb: 26, xf: function (t) { return t + "시간"; }, yf: function (t) { return t + " ℃"; }, pl: 50 });
       K.line(ctx, { x: g.L, y: g.Y(-3) }, { x: g.R, y: g.Y(-3) }, "rgba(127,211,255,.45)", 1.2, [4, 4]);
       K.t(ctx, "바깥 −3 ℃", g.L + 6, g.Y(-3) - 6, { s: 10.5, c: KC.blue });
       if (ran) {
-        var ends = [];
+        var ends = [], n = ran.a.length;
         [["a", KC.blue, "A"], ["b", KC.red, "B" + (VARS[0].diff ? "(필로티)" : "")]].forEach(function (s) {
-          var arr = ran[s[0]], pts = arr.map(function (t, i) { return [i / (arr.length - 1) * 12, t]; });
-          K.plot(ctx, g, pts, s[1]);
-          ends.push([s[2] + " " + arr[arr.length - 1].toFixed(1) + " ℃", g.Y(arr[arr.length - 1]), s[1]]);
+          var arr = ran[s[0]], pts = arr.map(function (t, i) { return [i / (n - 1) * 12, t]; });
+          ctx.save(); ctx.globalAlpha = .25; K.plot(ctx, g, pts, s[1]); ctx.restore();
+          K.plot(ctx, g, pts.filter(function (p) { return p[0] <= playT + 1e-6; }), s[1]);
+          var tv = tempAt(arr, playT); K.glow(ctx, g.X(playT), g.Y(tv), 4, s[1], 2.6);
+          ends.push([s[2] + " " + tv.toFixed(1) + " ℃", g.Y(tv), s[1]]);
         });
         if (Math.abs(ends[0][1] - ends[1][1]) < 24) { var mid = (ends[0][1] + ends[1][1]) / 2, up = ends[0][1] <= ends[1][1] ? 0 : 1; ends[up][1] = mid - 12; ends[1 - up][1] = mid + 12; }
         ends.forEach(function (e) { K.pill(ctx, e[0], g.R + 8, e[1] + 4, { s: 11, c: e[2] }); });
-      } else K.pill(ctx, "▶ 실험 실행을 누르면 12시간 온도 변화가 그려집니다", (g.L + g.R) / 2, (g.T + g.B) / 2, { s: 12, a: "center", c: KC.mute });
+      } else K.pill(ctx, "▶ 밤새 식혀 보기를 누르면 12시간 온도 변화가 그려집니다", (g.L + g.R) / 2, (g.T + g.B) / 2, { s: 12, a: "center", c: KC.mute });
     }
+    function draw() { ctx.clearRect(0, 0, W, H); drawModel(); drawChart(); }
+    $("md-run").addEventListener("click", function () { playT = REDUCE ? 12 : 0; draw(); });
+    K.animate(canvas, function (dt) {
+      var moved = false;
+      if (ran && playT < 12) { playT = Math.min(12, playT + dt / 1000 * 3); moved = true; }
+      if (anim.on) { ph += dt / 1000; moved = true; }
+      if (moved) draw();
+    }, 24);
     $("md-run").addEventListener("click", function () {
       ran = curves(); draw();
       var others = VARS.filter(function (x) { return !x.key && x.diff; }).map(function (x) { return x.t; });

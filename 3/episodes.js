@@ -342,56 +342,194 @@ function glowBar(ctx, x, y, w, h, rgb, a) {
     if (ep.cleared(1)) window.sthMission("m2-2", true);
   })();
 
-  /* 장면 3 — 수소차 */
+  /* 장면 3 — 수소차 (잘라 보는 디오라마: 도로 블록 위에 반으로 자른 수소차 + 아래에 경로·반응 읽음판) */
   (function () {
     var canvas = $("c-h2"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h, k = 2, NEED = 440;
-    var st = { on: !REDUCE }, drive = 0, puffs = [];
-    function car(x, y) {
+    var st = { on: !REDUCE }, drive = 0, puffs = [], ph = 0;
+    var DH = 430;                                         /* 위 모형 칸 높이 */
+    var OX = 388, OY = 120, SC = 0.66, CC = 0.866;
+    var I = K.iso({ ox: OX, oy: OY, s: SC, L: 620, D: 260 }), L = I.L, D = I.D;
+    var ZT = 70, X0 = 110, YC = 156, WC = 52;             /* 도로 윗면 높이, 차 뒤끝 x, 자른 면 y, 차 반폭 */
+    /* 차 옆모습(뒤 u=0 → 앞 u=380), 위로 z */
+    var BODY = [[8, 14], [0, 30], [2, 80], [34, 98], [84, 106], [128, 150], [266, 152], [312, 104], [370, 94], [382, 70], [380, 30], [368, 14]];
+    var TANKS = [[34, 42, 19], [78, 42, 19], [128, 40, 19]];
+    function onPlane(yv, fn) { ctx.save(); ctx.transform(CC * SC, 0.5 * SC, 0, -SC, OX + (X0 - yv) * CC * SC, OY + (X0 + yv) * 0.5 * SC - ZT * SC); fn(); ctx.restore(); }
+    function pathPoly(pts) { ctx.beginPath(); pts.forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); ctx.closePath(); }
+    function along(pts, t) {                              /* 꺾은선 위 비율 t 의 점 */
+      var seg = [], tot = 0, i;
+      for (i = 1; i < pts.length; i++) { var d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); tot += d; }
+      var want = t * tot;
+      for (i = 0; i < seg.length; i++) {
+        if (want <= seg[i] || i === seg.length - 1) { var f = seg[i] ? Math.min(1, want / seg[i]) : 0; return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f]; }
+        want -= seg[i];
+      }
+      return pts[0];
+    }
+    function P(u, z) { return I.P(X0 + u, YC, ZT + z); }
+    var H2PIPE = [[146, 40], [168, 20], [288, 20], [300, 56]];
+    var AIR = [[440, 76], [384, 76], [348, 72]];
+    var WATER = [[298, 52], [284, 14], [12, 12], [-14, 12]];
+    var WIRE = [[324, 52], [336, 46]];
+    function road() {
+      I.face(ctx, "front", function (Lw) {
+        [[0, 34, "#6e5236", "#4d3925"], [34, 54, "#9a8a72", "#7a6b56"], [54, 63, "#5d5d66", "#4a4a52"], [63, 70, "#6f8f45", "#56733a"]].forEach(function (b) {
+          var g = ctx.createLinearGradient(0, b[0], 0, b[1]); g.addColorStop(0, b[3]); g.addColorStop(1, b[2]);
+          ctx.fillStyle = g; ctx.fillRect(0, b[0], Lw, b[1] - b[0]);
+        });
+        var R = K.rng(17); for (var i = 0; i < 320; i++) { ctx.fillStyle = R() > .5 ? "rgba(255,255,255,.18)" : "rgba(30,20,10,.25)"; ctx.fillRect(R() * Lw, R() * 54, 2, 2); }
+      });
+      I.face(ctx, "right", function (Lw) {
+        [[0, 34, "#6e5236"], [34, 54, "#9a8a72"], [54, 70, "#4a4a52"]].forEach(function (b) { ctx.fillStyle = b[2]; ctx.fillRect(0, b[0], Lw, b[1] - b[0]); });
+        ctx.fillStyle = "#6f8f45"; ctx.fillRect(0, 63, 20, 7); ctx.fillRect(Lw - 10, 63, 10, 7);
+        var R = K.rng(19); for (var i = 0; i < 140; i++) { ctx.fillStyle = R() > .5 ? "rgba(255,255,255,.16)" : "rgba(30,20,10,.25)"; ctx.fillRect(R() * Lw, R() * 54, 2, 2); }
+      });
+      I.shade(ctx, "front", function () { return ZT; }); I.shade(ctx, "right", function () { return ZT; });
+      I.plane(ctx, ZT, "#7ea052", null, 0, L, 0, 20); I.plane(ctx, ZT, "#7ea052", null, 0, L, 250, D);
+      var a = I.P(0, 20, ZT), c = I.P(L, 250, ZT), ag = ctx.createLinearGradient(a.x, a.y, c.x, c.y); ag.addColorStop(0, "#4b4f5e"); ag.addColorStop(1, "#3a3d49");
+      I.plane(ctx, ZT, ag, null, 0, L, 20, 250);
+      function seg(x0, x1, y, col, w) { var p = I.P(x0, y, ZT), q = I.P(x1, y, ZT); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+      seg(0, L, 26, "rgba(255,255,255,.75)", 2); seg(0, L, 244, "rgba(255,255,255,.75)", 2);
+      var off = (ph * 0.12) % 70;
+      for (var x = -70 + off; x < L; x += 70) seg(Math.max(0, x), Math.min(L, x + 36), 70, "rgba(255,211,107,.9)", 2.4);
+      I.edges(ctx, ZT, ZT);
+      [[40, 8], [180, 6], [330, 10], [480, 7], [600, 9]].forEach(function (t, i) { I.tree(ctx, t[0], t[1], ZT, 0.9 + (i % 2) * .15); });
+    }
+    function wheel(u) {
+      onPlane(YC - WC + 12, function () {
+        var g = ctx.createRadialGradient(u, 30, 4, u, 30, 30); g.addColorStop(0, "#3b3f48"); g.addColorStop(1, "#0d0f13");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(u, 30, 30, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = "#b9c2d0"; ctx.beginPath(); ctx.arc(u, 30, 15, 0, 6.2832); ctx.fill();
+        ctx.strokeStyle = "#6c7584"; ctx.lineWidth = 3;
+        for (var i = 0; i < 5; i++) { var an = -ph * 0.01 + i * 1.2566; ctx.beginPath(); ctx.moveTo(u, 30); ctx.lineTo(u + Math.cos(an) * 14, 30 + Math.sin(an) * 14); ctx.stroke(); }
+      });
+    }
+    function car() {
+      /* 바닥 그림자 */
+      var s0 = P(190, 0); ctx.fillStyle = "rgba(10,15,30,.28)"; ctx.beginPath(); ctx.ellipse(s0.x - 18, s0.y - 18, 150, 30, 0.52, 0, 6.2832); ctx.fill();
+      wheel(70); wheel(300);
+      /* 먼 쪽 반쪽 몸체 — 뒤 실루엣 */
+      onPlane(YC - WC, function () { pathPoly(BODY); ctx.fillStyle = "#8b98ad"; ctx.fill(); });
+      /* 지붕·보닛 윗면 띠 (유리창은 짙은 파랑) */
+      var top = BODY.slice(1, 11);
+      for (var i = 0; i < top.length - 1; i++) {
+        var p0 = top[i], p1 = top[i + 1], du = p1[0] - p0[0], dz = p1[1] - p0[1], len = Math.hypot(du, dz) || 1;
+        var lit = 0.72 + 0.32 * (du / len) + 0.12 * (dz / len), glassy = (i === 3 || i === 5);
+        var a = I.P(X0 + p0[0], YC - WC, ZT + p0[1]), b = I.P(X0 + p1[0], YC - WC, ZT + p1[1]), c = I.P(X0 + p1[0], YC, ZT + p1[1]), d = I.P(X0 + p0[0], YC, ZT + p0[1]);
+        I.quad(ctx, a, b, c, d, glassy ? "rgba(40,70,110,.88)" : K.tint("#dbe6f4", lit));
+        ctx.strokeStyle = "rgba(255,255,255,.25)"; ctx.lineWidth = .8; ctx.stroke();
+      }
+      /* 자른 면 */
+      onPlane(YC, function () {
+        pathPoly(BODY); ctx.save(); ctx.clip();
+        var ig = ctx.createLinearGradient(0, 160, 0, 0); ig.addColorStop(0, "#5a6680"); ig.addColorStop(1, "#343c4f"); ctx.fillStyle = ig; ctx.fillRect(-10, 0, 400, 170);
+        /* 바닥판·뒤 짐칸 바닥 */
+        ctx.fillStyle = "#9aa3b2"; ctx.fillRect(-10, 10, 400, 12); ctx.fillRect(0, 62, 110, 6);
+        /* 앞 기계실 칸막이 */
+        ctx.fillStyle = "#8b94a6"; ctx.fillRect(276, 14, 6, 96);
+        /* 의자 */
+        ctx.fillStyle = "#a88a66";
+        ctx.beginPath(); ctx.roundRect(120, 64, 56, 12, 4); ctx.fill(); ctx.beginPath(); ctx.roundRect(122, 72, 14, 58, 5); ctx.fill();
+        ctx.beginPath(); ctx.roundRect(206, 30, 52, 12, 4); ctx.fill(); ctx.beginPath(); ctx.roundRect(208, 38, 14, 82, 5); ctx.fill();
+        /* 운전대 */
+        ctx.strokeStyle = "#c9d2e0"; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(262, 92); ctx.lineTo(282, 78); ctx.stroke();
+        /* 수소 탱크(가로로 누운 원통의 단면) — 실은 수소가 많을수록 분자가 많다 */
+        TANKS.forEach(function (t, j) {
+          var tg = ctx.createRadialGradient(t[0] - 5, t[1] + 6, 3, t[0], t[1], t[2]); tg.addColorStop(0, "#5f6f8a"); tg.addColorStop(1, "#1e2533");
+          ctx.fillStyle = tg; ctx.beginPath(); ctx.arc(t[0], t[1], t[2], 0, 6.2832); ctx.fill();
+          ctx.strokeStyle = "#9fb3d6"; ctx.lineWidth = 2; ctx.stroke();
+          ctx.fillStyle = "rgba(127,211,255,.18)"; ctx.beginPath(); ctx.arc(t[0], t[1], t[2] - 3, 0, 6.2832); ctx.fill();
+          var R = K.rng(41 + j), n = Math.round(k * 2.2);
+          for (var q = 0; q < n; q++) {
+            var an = R() * 6.2832 + ph * 0.0012 * (R() > .5 ? 1 : -1), rr = Math.sqrt(R()) * (t[2] - 6), mx = t[0] + Math.cos(an) * rr, my = t[1] + Math.sin(an) * rr;
+            ctx.fillStyle = "#f2f6ff"; ctx.beginPath(); ctx.arc(mx - 1.6, my, 1.7, 0, 6.2832); ctx.arc(mx + 1.6, my, 1.7, 0, 6.2832); ctx.fill();
+          }
+        });
+        /* 관: 수소(파랑)·물(하늘)·전선(노랑) */
+        function line(pts, col, w) { ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineJoin = "round"; ctx.beginPath(); pts.forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); ctx.stroke(); }
+        line(H2PIPE, "#6f86c8", 3.2); line(WATER, "#4fb6e8", 3); line(WIRE, "#ffd35a", 3);
+        /* 연료 전지 스택 */
+        var sg = ctx.createLinearGradient(296, 0, 346, 0); sg.addColorStop(0, "#41506b"); sg.addColorStop(1, "#27303f");
+        ctx.fillStyle = sg; ctx.fillRect(294, 52, 54, 38);
+        for (var x = 298; x < 346; x += 4) { ctx.fillStyle = (x / 4) % 2 ? "#9aa9c4" : "#56657f"; ctx.fillRect(x, 55, 2, 32); }
+        /* 모터 */
+        var mg = ctx.createRadialGradient(340, 36, 2, 342, 32, 17); mg.addColorStop(0, "#d7dde6"); mg.addColorStop(1, "#59626f");
+        ctx.fillStyle = mg; ctx.beginPath(); ctx.arc(342, 32, 16, 0, 6.2832); ctx.fill();
+        ctx.strokeStyle = "#2b2f3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(342, 32, 7, 0, 6.2832); ctx.stroke();
+        ctx.restore();
+        pathPoly(BODY); ctx.strokeStyle = "#ff8a3d"; ctx.lineWidth = 3.2; ctx.stroke();
+        /* 가까운 쪽 바퀴는 몸체 아래로 드러난 부분만 */
+        [70, 300].forEach(function (u) { ctx.save(); ctx.beginPath(); ctx.rect(u - 34, -2, 68, 16); ctx.clip(); ctx.fillStyle = "#14171d"; ctx.beginPath(); ctx.arc(u, 30, 30, 0, 6.2832); ctx.fill(); ctx.restore(); });
+      });
+      /* 흐름 알갱이 */
+      var tt = ph / 1000;
+      function flow(pts, n, sp, col, r) { for (var i = 0; i < n; i++) { var p = along(pts, ((tt * sp + i / n) % 1 + 1) % 1), s = P(p[0], p[1]); K.glow(ctx, s.x, s.y, r, col, 2.6); } }
+      flow(H2PIPE, 5, 0.35, "rgba(200,215,255,.95)", 2);
+      flow(AIR, 4, 0.45, "rgba(255,138,138,.95)", 2.2);
+      flow(WATER, 6, 0.3, "rgba(127,211,255,.98)", 2);
+      flow(WIRE, 2, 1.2, "rgba(255,211,90,.98)", 1.8);
+      /* 배기구 물방울 */
+      puffs.forEach(function (p) { var s = P(-16 - p.t * 30, 12 - p.t * 12); K.glow(ctx, s.x, s.y, 2.6 * (1 - p.t) + .8, "rgba(127,211,255," + (0.9 * (1 - p.t)).toFixed(2) + ")", 2.6); });
+    }
+    function drawModel() {
+      var range = k * 100, ok = range >= NEED;
+      var fl = I.P(L, D, 0);
+      K.studio(ctx, 0, 0, W, DH, { x: fl.x - 160, y: fl.y - 20, rx: 360, ry: 60 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      road(); car();
+      ctx.restore();
+      var box = [0, W];
+      I.label(ctx, X0 + 78, YC, ZT + 54, "수소 탱크 (압축 수소 " + k.toFixed(1) + " kg)", -110, 64, "#cfe0ff", box);
+      I.label(ctx, X0 + 322, YC, ZT + 86, "연료 전지 — 수소 + 산소 → 물 + 전기", 70, -96, "#ffd35a", box);
+      I.label(ctx, X0 + 352, YC, ZT + 26, "모터 — 전기로 바퀴를 돌림", 120, -10, "#e8ecff", box);
+      I.label(ctx, X0 + 420, YC, ZT + 76, "공기 속 산소가 들어감", 96, -46, "#ff9aa0", box);
+      I.label(ctx, X0 - 14, YC, ZT + 12, "배기구 → 물 약 " + (k * 9).toFixed(1) + " kg", -30, 128, "#9fdcff", box);
+      var l2 = "수소 " + k.toFixed(1) + " kg → " + range.toFixed(0) + " km";
+      if (range < 400) { K.bigText(ctx, "부산까지 못 간다", 22, 50, 28, "#ffffff"); K.bigText(ctx, l2, 22, 84, 18, "#ff9aac"); }
+      else if (!ok) { K.bigText(ctx, "부산엔 닿지만 여유가 없다", 22, 50, 28, "#ffffff"); K.bigText(ctx, l2, 22, 84, 18, "#ffd35a"); }
+      else if (k <= 4.7 + 1e-9) { K.bigText(ctx, "여유까지 챙겨 부산으로", 22, 50, 28, "#ffd35a"); K.bigText(ctx, l2, 22, 84, 18, "#ffffff"); }
+      else { K.bigText(ctx, "필요한 것보다 더 실었다", 22, 50, 28, "#ffffff"); K.bigText(ctx, l2, 22, 84, 18, "#bfe6ff"); }
+      K.warn(ctx, W - 14, 30, "⚠ 차를 반으로 잘라 속을 보임 · 장치 크기는 보기 쉽게 바꿈", "right");
+    }
+    function carIcon(x, y) {
       var bg = ctx.createLinearGradient(0, y - 18, 0, y + 6); bg.addColorStop(0, "#e9f3ff"); bg.addColorStop(.5, "#7fb6ff"); bg.addColorStop(1, "#2c4f8f");
       ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(x - 30, y + 2); ctx.lineTo(x - 28, y - 8); ctx.quadraticCurveTo(x - 14, y - 22, x + 6, y - 20); ctx.quadraticCurveTo(x + 22, y - 18, x + 30, y - 6); ctx.lineTo(x + 30, y + 2); ctx.closePath(); ctx.fill();
       ctx.fillStyle = "rgba(20,40,80,.75)"; ctx.beginPath(); ctx.moveTo(x - 16, y - 9); ctx.quadraticCurveTo(x - 8, y - 18, x + 6, y - 17); ctx.lineTo(x + 10, y - 9); ctx.closePath(); ctx.fill();
       [-18, 18].forEach(function (o) { ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(x + o, y + 3, 6, 0, 6.2832); ctx.fill(); ctx.fillStyle = "#9aa"; ctx.beginPath(); ctx.arc(x + o, y + 3, 2.4, 0, 6.2832); ctx.fill(); });
       K.glow(ctx, x + 30, y - 4, 2, "rgba(255,250,210,.95)", 4);
-      K.t(ctx, "H₂", x - 6, y - 4, { s: 9, c: "#0e2a5a", w: "900" });
     }
     function mol(x, y, kind) {
       if (kind === "H2") { K.planet(ctx, x - 6, y, 7, "#f2f5ff", "#8a93b8"); K.planet(ctx, x + 6, y, 7, "#f2f5ff", "#8a93b8"); }
       else if (kind === "O2") { K.planet(ctx, x - 8, y, 10, "#ff8a8a", "#8a1a1a"); K.planet(ctx, x + 8, y, 10, "#ff8a8a", "#8a1a1a"); }
       else { K.planet(ctx, x, y, 10, "#ff8a8a", "#8a1a1a"); K.planet(ctx, x - 10, y + 7, 6, "#f2f5ff", "#8a93b8"); K.planet(ctx, x + 10, y + 7, 6, "#f2f5ff", "#8a93b8"); }
     }
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var range = k * 100, LW = 600, x0 = 50, x1 = 560, y = 150, ok = range >= NEED;
-      function X(km) { return x0 + km / 800 * (x1 - x0); }
-      /* ── 왼쪽: 고속도로 ── */
-      K.stage(ctx, 0, 0, LW, H, "night", { seed: 141, title: "수소 " + k.toFixed(1) + " kg으로 갈 수 있는 거리" });
+    var Y0 = DH + 8, RY = Y0 + 96;
+    function rX(km) { return 50 + km / 800 * 510; }
+    function drawBottom() {
+      var range = k * 100, LW = 600, x0 = 50, x1 = 560, y = RY, ok = range >= NEED;
+      K.stage(ctx, 0, Y0, LW, H - Y0, "night", { seed: 141, title: "수소 " + k.toFixed(1) + " kg으로 갈 수 있는 거리" });
       var rd = ctx.createLinearGradient(0, y - 16, 0, y + 16); rd.addColorStop(0, "#2b2f45"); rd.addColorStop(.5, "#3a3f5c"); rd.addColorStop(1, "#2b2f45");
       ctx.fillStyle = rd; ctx.fillRect(x0 - 20, y - 16, x1 - x0 + 40, 32);
       ctx.strokeStyle = "rgba(255,211,107,.5)"; ctx.lineWidth = 1.5; ctx.setLineDash([12, 10]); ctx.beginPath(); ctx.moveTo(x0 - 20, y); ctx.lineTo(x1 + 20, y); ctx.stroke(); ctx.setLineDash([]);
-      var re = X(Math.min(range, 800));
+      var re = rX(Math.min(range, 800));
       ctx.save(); ctx.shadowColor = ok ? KC.green : KC.red; ctx.shadowBlur = 10; ctx.fillStyle = ok ? "rgba(63,211,163,.85)" : "rgba(255,107,129,.85)"; ctx.fillRect(x0, y + 18, re - x0, 6); ctx.restore();
-      [[0, "서울"], [400, "부산 400 km"]].forEach(function (q) { K.glow(ctx, X(q[0]), y, 5, "rgba(255,255,255,.95)", 2.4); K.pill(ctx, q[1], X(q[0]), y - 30, { s: 12, a: "center", c: KC.ink, box: [0, LW] }); });
-      ctx.strokeStyle = KC.yellow; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(440), y - 18); ctx.lineTo(X(440), y + 30); ctx.stroke();
-      K.pill(ctx, "여유 포함 440 km", X(440), y + 50, { s: 11, a: "center", c: KC.yellow, box: [0, LW] });
-      var cxp = X(Math.min(drive, range, 800));
-      puffs.forEach(function (p) { K.glow(ctx, p.x, p.y, 2.2 * (1 - p.t) + .6, "rgba(127,211,255," + (0.9 * (1 - p.t)) + ")", 2.6); });
-      car(cxp, y - 4);
-      K.pill(ctx, "갈 수 있는 거리 " + range.toFixed(0) + " km", x0, H - 22, { s: 14, c: ok ? KC.green : KC.red, box: [0, LW] });
-      K.pill(ctx, "배기구에서 나오는 것: 물", LW - 14, H - 22, { s: 11, a: "right", c: KC.blue, box: [0, LW] });
-
-      /* ── 오른쪽: 연료 전지 반응 ── */
-      var RX = LW + 8, RW = W - RX;
-      K.stage(ctx, RX, 0, RW, H, "lab", { seed: 143, title: "연료 전지 안의 반응" });
-      var my = 92;
+      [[0, "서울"], [400, "부산 400 km"]].forEach(function (q) { K.glow(ctx, rX(q[0]), y, 5, "rgba(255,255,255,.95)", 2.4); K.pill(ctx, q[1], rX(q[0]), y - 30, { s: 12, a: "center", c: KC.ink, box: [0, LW] }); });
+      ctx.strokeStyle = KC.yellow; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(rX(440), y - 18); ctx.lineTo(rX(440), y + 30); ctx.stroke();
+      K.pill(ctx, "여유 포함 440 km", rX(440), y + 48, { s: 11, a: "center", c: KC.yellow, box: [0, LW] });
+      carIcon(rX(Math.min(drive, range, 800)), y - 4);
+      K.pill(ctx, "갈 수 있는 거리 " + range.toFixed(0) + " km", x0, H - 16, { s: 14, c: ok ? KC.green : KC.red, box: [0, LW] });
+      K.pill(ctx, "배기구에서 나오는 것: 물", LW - 14, H - 16, { s: 11, a: "right", c: KC.blue, box: [0, LW] });
+      var RX = LW + 8, RW = W - RX, my = Y0 + 66;
+      K.stage(ctx, RX, Y0, RW, H - Y0, "lab", { seed: 143, title: "연료 전지 안의 반응" });
       mol(RX + 34, my - 16, "H2"); mol(RX + 34, my + 16, "H2");
       K.t(ctx, "+", RX + 66, my + 5, { s: 18, a: "center", c: KC.mute });
       mol(RX + 100, my, "O2");
       K.arrow(ctx, { x: RX + 128, y: my }, { x: RX + 168, y: my }, KC.ink, 2, 9);
       mol(RX + 200, my - 18, "W"); mol(RX + 200, my + 18, "W");
-      K.t(ctx, "2H₂ + O₂ → 2H₂O", RX + RW / 2, my + 56, { s: 14, a: "center", c: KC.ink, w: "900" });
-      kv(ctx, "나오는 물 (수소 4 g → 물 36 g, 9배)", "약 " + (k * 9).toFixed(1) + " kg", RX + 18, 186, KC.blue, 20);
-      K.pill(ctx, "배기가스 이산화 탄소 0 g", RX + RW / 2, H - 14, { s: 12, a: "center", c: KC.green, box: [RX, W] });
+      K.t(ctx, "2H₂ + O₂ → 2H₂O", RX + RW / 2, my + 52, { s: 14, a: "center", c: KC.ink, w: "900" });
+      kv(ctx, "나오는 물 (수소 4 g → 물 36 g, 9배)", "약 " + (k * 9).toFixed(1) + " kg", RX + 18, Y0 + 136, KC.blue, 20);
+      K.pill(ctx, "달릴 때 배기가스 이산화 탄소 0 g", RX + RW / 2, H - 14, { s: 11.5, a: "center", c: KC.green, box: [RX, W] });
     }
+    function draw() { ctx.clearRect(0, 0, W, H); drawModel(); drawBottom(); }
     function update() {
       draw();
       $("h2-info").innerHTML = "2H₂ + O₂ → 2H₂O. 수소 분자 2개(4 g)가 물 분자 2개(36 g)가 되므로, 수소 1 kg을 쓰면 물이 약 9 kg 나옵니다. 수소 " + k.toFixed(1) + " kg → " + (k * 100).toFixed(0) + " km.";
@@ -407,10 +545,11 @@ function glowBar(ctx, x, y, w, h, rgb, a) {
     if (REDUCE) drive = 9999;
     K.animate(canvas, function (dt) {
       if (!st.on) return;
-      var lim = Math.min(k * 100, 800), x = 50 + Math.min(drive, lim) / 800 * 510;
-      drive += dt / 1000 * 120; if (drive > lim + 160) { drive = 0; puffs = []; }
-      if (drive < lim && Math.random() < .5) puffs.push({ x: x - 32, y: 148, t: 0 });
-      puffs.forEach(function (p) { p.t += dt / 900; p.x -= dt * .02; p.y += dt * .012; });
+      ph += dt;
+      var lim = Math.min(k * 100, 800);
+      drive += dt / 1000 * 120; if (drive > lim + 160) drive = 0;
+      if (Math.random() < .35) puffs.push({ t: 0 });
+      puffs.forEach(function (p) { p.t += dt / 900; });
       puffs = puffs.filter(function (p) { return p.t < 1; });
       draw();
     });
