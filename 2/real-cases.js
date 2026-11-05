@@ -25,17 +25,26 @@ window.sthLab({
     task: "편각을 슬라이더로 맞추세요(± 0.5°, 서쪽은 음수).",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, d = 0;
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var cx = 220, cy = 140, R = 110;
-        ctx.save(); ctx.strokeStyle = H.v("--line"); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-        H.text(ctx, "진북", cx, cy - R - 8, { s: 12, w: "900", a: "center" }); H.text(ctx, "동", cx + R + 14, cy + 4, { s: 12, w: "900", a: "center" }); H.text(ctx, "서", cx - R - 14, cy + 4, { s: 12, w: "900", a: "center" });
-        H.line(ctx, [[cx, cy], [cx, cy - R]], H.v("--line"), 2);
-        var a = (d - 90) * Math.PI / 180; H.arrow(ctx, cx, cy, cx + Math.cos(a) * (R - 8), cy + Math.sin(a) * (R - 8), H.v("--coral-700"), 4, 12);
-        H.text(ctx, "내가 맞춘 나침반 북쪽 " + deg(d), cx, cy + R + 22, { s: 12, w: "800", a: "center", c: H.v("--coral-700") });
-        H.rows(ctx, 470, 40, [["북쪽 성분 X", M.X.toLocaleString() + " nT"], ["동쪽 성분 Y", M.Y.toLocaleString() + " nT"], ["내 답 (편각)", d.toFixed(1) + "°", null, true]], 60);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH, { x: 220, y: 240, rx: 200, ry: 16 });
+        /* 나무 받침 위의 놋쇠 나침반(비스듬히 본 모습) */
+        var cx = 220, cy = 150, R = 120, k = 0.55;
+        function pt(deg2, rr) { var a = deg2 * Math.PI / 180; return { x: cx + Math.sin(a) * rr, y: cy - Math.cos(a) * rr * k }; }
+        SP.cyl(ctx, cx, cy + 14, R + 30, (R + 30) * k, 18, "wood");
+        SP.cyl(ctx, cx, cy, R + 8, (R + 8) * k, 12, "brass", { top: "#f1d58a" });
+        ctx.fillStyle = "#fbf6ea"; ctx.beginPath(); ctx.ellipse(cx, cy, R, R * k, 0, 0, 6.2832); ctx.fill();
+        for (var q = 0; q < 360; q += 10) { var p1 = pt(q, R - (q % 90 ? 8 : 16)), p2 = pt(q, R - 2); ctx.strokeStyle = "rgba(90,55,10,.7)"; ctx.lineWidth = q % 90 ? 1 : 2; ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); }
+        [["진북", 0], ["동", 90], ["남", 180], ["서", 270]].forEach(function (s) { var p = pt(s[1], R - 30); K.t(ctx, s[0], p.x, p.y + 4, { s: 12, w: "900", a: "center", c: "#5a3405" }); });
+        var tip = pt(d, R - 14), tail = pt(d + 180, R - 40);
+        ctx.fillStyle = "rgba(20,30,50,.2)"; ctx.beginPath(); ctx.moveTo(tip.x + 3, tip.y + 5); ctx.lineTo(cx + 3, cy + 5); ctx.lineTo(tail.x + 3, tail.y + 5); ctx.fill();
+        ctx.strokeStyle = LT.red; ctx.lineWidth = 6; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(tip.x, tip.y); ctx.stroke();
+        ctx.strokeStyle = "#6d7788"; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(tail.x, tail.y); ctx.stroke(); ctx.lineCap = "butt";
+        K.planet(ctx, cx, cy, 6, "#ffe9a8", "#7a5010");
+        K.pill(ctx, "내가 맞춘 나침반 북쪽 " + deg(d), cx, CH - 12, { s: 12, a: "center", c: "#ffb3bd", box: [0, 440] });
+        SP.card(ctx, 470, 14, 416, CH - 28, "학교 근처 지구 자기장 (WMM2025)", [["북쪽 성분 X", M.X.toLocaleString() + " nT"], ["동쪽 성분 Y", M.Y.toLocaleString() + " nT", LT.blue], null, ["내 답 (편각)", d.toFixed(1) + "°", LT.red]], ["편각 = 진북과 나침반 북쪽 사이의 각", null], { top: 64, gap: 32 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.slider({ label: "편각", min: -20, max: 20, step: 0.1, value: 0, fmt: function (x) { return x.toFixed(1) + "°"; }, onInput: function (x) { d = x; api.changed(); draw(); } });
       api.info("nT(나노테슬라)는 자기장의 세기 단위입니다. Y가 음수면 자기장이 서쪽으로 기울어 있다는 뜻입니다. " + SRC
         + "<div data-link='{\"id\":\"noaa-wmm\",\"title\":\"NOAA 자기장 계산기\",\"src\":\"미국 해양대기청 NCEI\",\"url\":\"https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml\",\"ask\":\"우리 학교의 위도·경도를 넣고 편각(Declination)을 계산해, 이 사례의 값과 비교해 오세요. 해마다 얼마나(도 또는 분, 1° = 60′) 변한다고 나오는지도 적어 오세요.\"}'></div>");
@@ -64,15 +73,28 @@ window.sthLab({
     task: "복각을 슬라이더로 맞추세요(± 0.5°).",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, a = 20;
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 80, y0 = 60, L = 185;
-        H.line(ctx, [[40, y0], [440, y0]], H.v("--line"), 2); H.text(ctx, "땅 (수평면)", 40, y0 - 8, { s: 11, w: "800", c: H.v("--mist") });
-        var r = a * Math.PI / 180; H.arrow(ctx, x0, y0, x0 + Math.cos(r) * L, y0 + Math.sin(r) * L, H.v("--coral-700"), 4, 12);
-        H.text(ctx, "내가 맞춘 자기장 방향 " + a.toFixed(1) + "°", x0 + 140, y0 - 30, { s: 11.5, w: "800", c: H.v("--coral-700") });
-        H.rows(ctx, 520, 40, [["수평 성분 H", M.H.toLocaleString() + " nT"], ["연직 성분 Z (아래로)", M.Z.toLocaleString() + " nT"], ["전체 세기 F", M.F.toLocaleString() + " nT"], ["내 답 (복각)", a.toFixed(1) + "°", null, true]], 52);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH, { x: 240, y: 246, rx: 220, ry: 12 });
+        /* 땅 블록(윗면 = 수평면, 앞면 = 땅속 단면) + 복각 화살표 */
+        var x0 = 40, x1 = 440, y0 = 70, DX = 30, DY = -24;
+        SP.poly(ctx, [{ x: x0, y: y0 }, { x: x1, y: y0 }, { x: x1 + DX, y: y0 + DY }, { x: x0 + DX, y: y0 + DY }], "#9cc46e");
+        var fg = ctx.createLinearGradient(0, y0, 0, CH - 20); fg.addColorStop(0, "#a07850"); fg.addColorStop(1, "#5a3f28");
+        ctx.fillStyle = fg; ctx.fillRect(x0, y0, x1 - x0, CH - 20 - y0);
+        SP.poly(ctx, [{ x: x1, y: y0 }, { x: x1 + DX, y: y0 + DY }, { x: x1 + DX, y: CH - 20 + DY }, { x: x1, y: CH - 20 }], "#4a3220");
+        ctx.strokeStyle = "rgba(255,240,210,.18)"; ctx.lineWidth = 1; for (var q = y0 + 30; q < CH - 20; q += 30) { ctx.beginPath(); ctx.moveTo(x0, q); ctx.lineTo(x1, q + 4); ctx.stroke(); }
+        var ax = 110, Lr = 190, r = a * Math.PI / 180;
+        ctx.save(); ctx.beginPath(); ctx.rect(x0, y0 - 40, x1 - x0 + DX, CH); ctx.clip();
+        K.wedge(ctx, ax, y0, 0, r, 70, "rgba(245,159,0,.3)", "#d9a400");
+        K.arrow(ctx, { x: ax, y: y0 }, { x: ax + Math.cos(r) * Lr, y: y0 + Math.sin(r) * Lr }, "#ff6b6b", 4.5, 13);
+        ctx.restore();
+        K.line(ctx, { x: ax, y: y0 }, { x: x1, y: y0 }, "rgba(255,255,255,.9)", 1.4, [5, 4]);
+        K.pill(ctx, "땅 (수평면)", x0 + 8, y0 - 30, { s: 11, c: KC2r(K) });
+        K.pill(ctx, "내가 맞춘 자기장 방향 " + a.toFixed(1) + "°", ax - 60, CH - 34, { s: 11.5, c: "#ffd2a8", box: [0, 470] });
+        SP.card(ctx, 500, 14, 386, CH - 28, "땅속으로 기운 지구 자기장", [["수평 성분 H", M.H.toLocaleString() + " nT"], ["연직 성분 Z (아래로)", M.Z.toLocaleString() + " nT", LT.blue], ["전체 세기 F", M.F.toLocaleString() + " nT"], ["내 답 (복각)", a.toFixed(1) + "°", LT.red]], ["복각 = 자기장과 수평면 사이의 각", null], { top: 60, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+      function KC2r(K) { return K.C.ink; }
+    cv.canvas._redraw = draw;
       api.slider({ label: "복각", min: 0, max: 90, step: 0.1, value: 20, fmt: function (x) { return x.toFixed(1) + "°"; }, onInput: function (x) { a = x; api.changed(); draw(); } });
       api.info("스마트폰 자기 센서 앱으로 x·y·z 성분을 재어 보면 비슷한 값(수십 μT = 수만 nT)이 나옵니다. 1 μT = 1,000 nT. " + SRC);
       draw();

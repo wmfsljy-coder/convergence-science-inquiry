@@ -53,11 +53,39 @@ window.sthLab({
     task: "제1병동 사망률 ÷ 제2병동 사망률 을 슬라이더로 맞추세요(± 0.2).",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, g = 1;
-      function draw() {
-        chart(H, ctx, W, cv.H, 1841, 1846, null);
-        H.rows(ctx, 640, 30, [["제1병동 6년 출산 · 사망", SUM[0].toLocaleString() + " · " + SUM[1].toLocaleString()], ["제2병동 6년 출산 · 사망", SUM[2].toLocaleString() + " · " + SUM[3].toLocaleString()], ["내 답 (몇 배)", g.toFixed(1) + " 배", null, true]], 62);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT;
+        bars19(ctx, W, cv.H, 1841, 1846, null);
+        SP.card(ctx, 630, 14, 256, cv.H - 28, "1841~1846 합계", [
+          ["제1병동 출산", SUM[0].toLocaleString()], ["제1병동 사망", SUM[1].toLocaleString(), LT.red],
+          ["제2병동 출산", SUM[2].toLocaleString()], ["제2병동 사망", SUM[3].toLocaleString(), LT.blue],
+          null, ["내 답 (몇 배)", g.toFixed(1) + " 배", LT.ink]
+        ], null, { top: 54, gap: 26 });
       }
-      cv.canvas._redraw = draw;
+      function bars19(ctx, W, CH, a, b, pick) {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 610, CH - 20, "빈 종합 병원 산모 사망률 (빨강 제1병동 · 파랑 제2병동)");
+        var x0 = 60, x1 = 600, y0 = 46, y1 = CH - 34, n = b - a + 1, bw = (x1 - x0) / n, DX = Math.min(8, bw * .12), DY = -DX * .7;
+        function Yv(v) { return y1 - v / 17 * (y1 - y0); }
+        ctx.strokeStyle = LT.grid; ctx.lineWidth = 1;
+        [0, 5, 10, 15].forEach(function (v) { ctx.beginPath(); ctx.moveTo(x0, Yv(v)); ctx.lineTo(x1, Yv(v)); ctx.stroke(); K.t(ctx, v + "%", x0 - 6, Yv(v) + 4, { s: 10, w: "600", a: "right", c: LT.mute }); });
+        function col(x, w, v, m, on) {
+          var c = SP.mt(m), top = Yv(v);
+          SP.poly(ctx, [{ x: x + w, y: y1 }, { x: x + w + DX, y: y1 + DY }, { x: x + w + DX, y: top + DY }, { x: x + w, y: top }], c[2]);
+          SP.poly(ctx, [{ x: x, y: top }, { x: x + w, y: top }, { x: x + w + DX, y: top + DY }, { x: x + DX, y: top + DY }], c[0]);
+          ctx.globalAlpha = on === false ? .55 : 1; ctx.fillStyle = c[1]; ctx.fillRect(x, top, w, y1 - top); ctx.globalAlpha = 1;
+        }
+        for (var y = a; y <= b; y++) {
+          var r = row(y), x = x0 + (y - a) * bw, on = pick == null ? null : pick === y;
+          if (pick === y) { ctx.fillStyle = "rgba(245,159,0,.16)"; ctx.fillRect(x, y0, bw, y1 - y0); }
+          col(x + bw * .1, bw * .34, r1(r), "red", on); col(x + bw * .5, bw * .34, r2(r), "blue", on);
+          if (n <= 8 || y % 2 === 1 || pick === y) K.t(ctx, String(y), x + bw / 2, y1 + 15, { s: n > 8 ? 9 : 10, w: pick === y ? "900" : "600", a: "center", c: pick === y ? "#b86e00" : LT.mute });
+        }
+        if (a <= 1847 && b >= 1847) { var xh = x0 + (1847.4 - a) * bw; K.line(ctx, { x: xh, y: y0 }, { x: xh, y: y1 }, LT.green, 1.6, [5, 4]); K.t(ctx, "손 씻기 시작", xh + 4, y0 + 12, { s: 10.5, w: "800", c: LT.green }); }
+        K.line(ctx, { x: x0, y: y1 }, { x: x1, y: y1 }, LT.line, 1.5);
+      }
+    cv.canvas._redraw = draw;
       api.slider({ label: "제1병동은 제2병동의 몇 배", min: 1, max: 6, step: 0.1, value: 1, fmt: function (x) { return x.toFixed(1) + " 배"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
       api.info("사망률 = 사망 ÷ 출산 × 100. 두 병동은 날마다 번갈아 산모를 받아서, 어느 병동에 가는지는 거의 우연이었어요 — 그래서 두 병동은 좋은 비교 집단이 됩니다. " + SRC
         + "<div data-map='{\"id\":\"vienna-akh\",\"name\":\"옛 빈 종합병원 (오스트리아 빈, 지금은 빈 대학 캠퍼스)\",\"lat\":48.2155,\"lng\":16.3545,\"zoom\":17,\"ask\":\"옛 빈 종합병원 건물을 지도에서 찾아보세요. 여러 개의 안뜰로 이어진 건물 모양을 보고, 해부실과 산과 병동을 오가던 의사들의 움직임을 상상해 한두 문장으로 적어 오세요.\"}'></div>");
@@ -86,12 +114,38 @@ window.sthLab({
     task: "제1병동 사망률이 제2병동의 1.2 배 이하가 된 첫해를 고르세요.",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, y = 1841;
-      function draw() {
-        chart(H, ctx, W, cv.H, 1841, 1858, y);
-        var r = row(y);
-        H.rows(ctx, 640, 30, [["고른 해", y + "년", "--amber-700"], ["제1병동 · 제2병동", r1(r).toFixed(2) + "% · " + r2(r).toFixed(2) + "%"], ["제1 ÷ 제2", (r2(r) ? r1(r) / r2(r) : 0).toFixed(2) + " 배", null, true]], 62);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, r = row(y);
+        bars19(ctx, W, cv.H, 1841, 1858, y);
+        SP.card(ctx, 630, 14, 256, cv.H - 28, "고른 해 · " + y + "년", [
+          ["제1병동", r1(r).toFixed(2) + "%", LT.red], ["제2병동", r2(r).toFixed(2) + "%", LT.blue],
+          null, ["제1 ÷ 제2", (r2(r) ? r1(r) / r2(r) : 0).toFixed(2) + " 배", LT.ink]
+        ], null, { top: 60, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+      function bars19(ctx, W, CH, a, b, pick) {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 610, CH - 20, "빈 종합 병원 산모 사망률 (빨강 제1병동 · 파랑 제2병동)");
+        var x0 = 60, x1 = 600, y0 = 46, y1 = CH - 34, n = b - a + 1, bw = (x1 - x0) / n, DX = Math.min(8, bw * .12), DY = -DX * .7;
+        function Yv(v) { return y1 - v / 17 * (y1 - y0); }
+        ctx.strokeStyle = LT.grid; ctx.lineWidth = 1;
+        [0, 5, 10, 15].forEach(function (v) { ctx.beginPath(); ctx.moveTo(x0, Yv(v)); ctx.lineTo(x1, Yv(v)); ctx.stroke(); K.t(ctx, v + "%", x0 - 6, Yv(v) + 4, { s: 10, w: "600", a: "right", c: LT.mute }); });
+        function col(x, w, v, m, on) {
+          var c = SP.mt(m), top = Yv(v);
+          SP.poly(ctx, [{ x: x + w, y: y1 }, { x: x + w + DX, y: y1 + DY }, { x: x + w + DX, y: top + DY }, { x: x + w, y: top }], c[2]);
+          SP.poly(ctx, [{ x: x, y: top }, { x: x + w, y: top }, { x: x + w + DX, y: top + DY }, { x: x + DX, y: top + DY }], c[0]);
+          ctx.globalAlpha = on === false ? .55 : 1; ctx.fillStyle = c[1]; ctx.fillRect(x, top, w, y1 - top); ctx.globalAlpha = 1;
+        }
+        for (var yy = a; yy <= b; yy++) {
+          var r = row(yy), x = x0 + (yy - a) * bw, on = pick == null ? null : pick === yy;
+          if (pick === yy) { ctx.fillStyle = "rgba(245,159,0,.16)"; ctx.fillRect(x, y0, bw, y1 - y0); }
+          col(x + bw * .1, bw * .34, r1(r), "red", on); col(x + bw * .5, bw * .34, r2(r), "blue", on);
+          if (n <= 8 || yy % 2 === 1 || pick === yy) K.t(ctx, String(yy), x + bw / 2, y1 + 15, { s: n > 8 ? 9 : 10, w: pick === yy ? "900" : "600", a: "center", c: pick === yy ? "#b86e00" : LT.mute });
+        }
+        if (a <= 1847 && b >= 1847) { var xh = x0 + (1847.4 - a) * bw; K.line(ctx, { x: xh, y: y0 }, { x: xh, y: y1 }, LT.green, 1.6, [5, 4]); K.t(ctx, "손 씻기 시작", xh + 4, y0 + 12, { s: 10.5, w: "800", c: LT.green }); }
+        K.line(ctx, { x: x0, y: y1 }, { x: x1, y: y1 }, LT.line, 1.5);
+      }
+    cv.canvas._redraw = draw;
       api.slider({ label: "연도", min: 1841, max: 1858, step: 1, value: 1841, fmt: function (x) { return x + "년"; }, onInput: function (x) { y = x; api.changed(); draw(); } });
       api.info("1847년은 5월 중순에야 손 씻기를 시작했으니, 그해 전체 값에는 손 씻기 전 몇 달이 섞여 있어요. 1849년 이후 값도 함께 보세요. " + SRC);
       draw();
@@ -125,21 +179,33 @@ window.sthLab({
       var x0 = 50, x1 = 640, y0 = 24, y1 = 250, n = ZH.length || 1;
       function X(i) { return x0 + i / (n - 1) * (x1 - x0); }
       function Y(t) { return y1 - (t - 28) / 14 * (y1 - y0); }
-      function draw() {
-        H.paper(ctx, W, cv.H); H.axes(ctx, x0, y0, x1, y1);
-        [30, 33, 36, 39, 42].forEach(function (t) { H.text(ctx, t + "°", x0 - 8, Y(t) + 4, { s: 10, a: "right", c: H.v("--mist") }); H.dash(ctx, x0, Y(t), x1, Y(t), H.v("--line"), 0.5); });
-        H.line(ctx, ZH.map(function (r, i) { return [X(i), Y(zDg(r[0]) || 28)]; }), H.v("--brand"), 2);
-        H.line(ctx, ZH.map(function (r, i) { return [X(i), Y(r[1])]; }), H.v("--coral-700"), 2.5);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH, { x: 760, y: 128, rx: 60, ry: 8 });
+        K.card(ctx, 10, 6, 652, CH - 12, null);
+        ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+        [30, 33, 36, 39, 42].forEach(function (tt) { K.line(ctx, { x: x0, y: Y(tt) }, { x: x1, y: Y(tt) }, LT.grid, 1); K.t(ctx, tt + "°", x0 - 8, Y(tt) + 4, { s: 10, w: "600", a: "right", c: LT.mute }); });
+        K.line(ctx, { x: x0, y: y1 }, { x: x1, y: y1 }, LT.line, 1.5);
+        SP.plot(ctx, { X: X, Y: Y }, ZH.map(function (r, i) { return [i, zDg(r[0]) || 28]; }), LT.blue, { w: 2 });
+        SP.plot(ctx, { X: X, Y: Y }, ZH.map(function (r, i) { return [i, r[1]]; }), LT.red, { w: 2.6 });
         ZH.forEach(function (r, i) {
-          H.dot(ctx, X(i), Y(r[1]), Math.abs(i - ZPK) <= 2 ? 4 : 2.5, H.v("--coral-700"));
-          if (Math.abs(i - ZPK) <= 2) H.text(ctx, r[1].toFixed(1), X(i), Y(r[1]) - 8, { s: 11, w: "800", a: "center", c: H.v("--coral-700") });
-          if (i % 4 === 0) H.text(ctx, zMd(r[0]), X(i), y1 + 15, { s: 10, a: "center", c: H.v("--mist") });
+          var near = Math.abs(i - ZPK) <= 2;
+          ctx.fillStyle = LT.red; ctx.beginPath(); ctx.arc(X(i), Y(r[1]), near ? 4.5 : 2.5, 0, 6.2832); ctx.fill();
+          if (near) K.t(ctx, r[1].toFixed(1), X(i), Y(r[1]) - 9, { s: 11, w: "900", a: "center", c: LT.red });
+          if (i % 4 === 0) K.t(ctx, zMd(r[0]), X(i), y1 + 15, { s: 10, w: "600", a: "center", c: LT.mute });
         });
-        H.box(ctx, 680, 30, 12, 12, H.v("--coral-700")); H.text(ctx, "창원(바닷가)", 698, 41, { s: 12, w: "800" });
-        H.box(ctx, 680, 52, 12, 12, H.v("--brand")); H.text(ctx, "대구(내륙)", 698, 63, { s: 12, w: "800" });
-        H.rows(ctx, 680, 96, [["대구의 그 무렵 최고", Math.max.apply(null, ZH.map(function (r) { return zDg(r[0]) || 0; })).toFixed(1) + " °C", "--brand"], ["내 답 (차이)", "+" + k.toFixed(1) + " °C", null, true]], 56);
+        /* 백엽상 미니어처 */
+        var bx = 760, by = 40;
+        ctx.fillStyle = "#6d7788"; ctx.fillRect(bx - 3, by + 50, 6, 36);
+        SP.poly(ctx, [{ x: bx - 30, y: by + 6 }, { x: bx + 24, y: by + 6 }, { x: bx + 34, y: by - 4 }, { x: bx - 20, y: by - 4 }], "#f1f3f5");
+        ctx.fillStyle = "#e6ebf2"; ctx.fillRect(bx - 30, by + 6, 54, 46);
+        ctx.strokeStyle = "rgba(20,40,90,.25)"; ctx.lineWidth = 1; for (var q = 0; q < 6; q++) { ctx.beginPath(); ctx.moveTo(bx - 28, by + 12 + q * 7); ctx.lineTo(bx + 22, by + 12 + q * 7); ctx.stroke(); }
+        SP.poly(ctx, [{ x: bx + 24, y: by + 6 }, { x: bx + 34, y: by - 4 }, { x: bx + 34, y: by + 42 }, { x: bx + 24, y: by + 52 }], "#c5cedb");
+        SP.card(ctx, 676, 140, 210, CH - 152, null, [["대구의 그 무렵 최고", Math.max.apply(null, ZH.map(function (r) { return zDg(r[0]) || 0; })).toFixed(1) + " °C", LT.blue], ["내 답 (차이)", "+" + k.toFixed(1) + " °C", LT.ink]], null, { top: 30, gap: 30 });
+        K.t(ctx, "— 창원(바닷가)", 690, CH - 34, { s: 11, w: "900", c: LT.red });
+        K.t(ctx, "— 대구(내륙)", 690, CH - 16, { s: 11, w: "900", c: LT.blue });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.slider({ label: "그날 − 앞뒤 이틀 평균", min: 0, max: 6, step: 0.1, value: 0, fmt: function (x) { return "+" + x.toFixed(1) + " °C"; }, onInput: function (x) { k = x; api.changed(); draw(); } });
       api.info("앞뒤 이틀 = 그날 앞의 이틀과 뒤의 이틀, 모두 나흘입니다. " + SRC_Z
         + "<div data-link='{\"id\":\"kma-cw155-aug\",\"title\":\"창원 2026년 8월 일별 기온\",\"src\":\"기상청 날씨누리\",\"url\":\"https://www.weather.go.kr/w/weather/land/past-obs/obs-by-day.do?stn=155&yy=2026&mm=8&obs=1\",\"ask\":\"8월 1일의 최고 기온과 최저 기온을 확인하고, 지점을 부산으로 바꿔 같은 날 값을 찾아 오세요.\"}'></div>");

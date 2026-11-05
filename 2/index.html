@@ -48,7 +48,7 @@
         <section class="scene" data-title="데이터 가공 — 튀는 값 걸러 내기">
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">부장</span>“기록계가 두 번 오작동해서 말도 안 되는 값이 찍혔어. 중앙값에서 너무 멀리 떨어진 값을 이상값으로 걸러 내야 해. 기준을 너무 좁히면 진짜 데이터까지 지워지고, 너무 넓히면 오류가 남아. 걸러 낸 뒤에는 기상청 바깥 기온과 비교해 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-cl" width="900" height="330"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c-cl" width="900" height="330"></canvas></div>
             <div class="controls">
               <div class="ctrl-group" style="flex:1 1 100%">
                 <div class="ctrl-label">이상값 기준 — 중앙값에서 이만큼 넘게 벗어나면 제거<span class="val" id="cl-x-val">3 ℃</span></div>
@@ -107,6 +107,7 @@
         <section class="scene" data-title="1.5초의 낙하">
           <div class="story narr"><div class="who">☕</div><div class="say"><span class="name">이야기</span>물리 탐구 시간. 커피 필터를 1.5 m 높이에서 떨어뜨리면 처음에는 빨라지다가 곧 일정한 속력으로 내려옵니다. 공기 저항이 중력과 같아지는 이 속력을 <b>종단 속도</b>라고 합니다. 눈으로 보기엔 너무 짧은 순간이라, 모둠은 <b>MBL</b>(센서 + 컴퓨터) 운동 센서를 꺼냈습니다.</div></div>
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">모둠원 하린</span>“필터를 여러 장 겹치면 무거워지니까 종단 속도가 어떻게 될까?”</div></div>
+          <figure class="hero-art"><img src="img/filter-drop.webp" alt="학교 물리 실험대를 블록처럼 잘라 낸 모형. 높은 나무 기둥 꼭대기의 동작 감지 센서 아래로 종이 커피 필터가 떨어지고, 지나온 자리를 나타내는 흐린 필터들은 위쪽에서는 촘촘하다가 아래쪽에서는 같은 간격으로 늘어선다. 탁자 위 노트북에는 처음에 오르다가 평평해지는 그래프가 떠 있고, 학생 둘이 뒷모습으로 지켜본다." width="900" height="900" loading="lazy"><figcaption><b>떨어지는 커피 필터는 처음에 빨라지다가 곧 일정해집니다</b> 커피 필터는 떨어지기 시작하면 점점 빨라지지만, 공기 저항이 중력과 같아지면 더 빨라지지 않고 일정한 속력으로 내려옵니다. 1.5초 남짓한 이 짧은 변화를 잡으려면 센서가 1초에 몇 번 재야 하는지, 데이터를 어떤 그래프로 그려야 잘 보이는지를 이 이야기에서 정해 봅니다. <span class="art-note">⚠ 흐린 필터는 같은 시간 간격마다 지나온 자리를 겹쳐 그린 것입니다.</span></figcaption></figure>
           <div class="gate loose" id="g2"></div>
         </section>
 
@@ -114,7 +115,7 @@
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">선생님</span>“MBL로 데이터를 모으는 과정을 순서대로 떠올려 보고, 측정 간격을 정해 봅시다. 낙하는 1.5초뿐이라 간격이 너무 길면 그래프에 점이 몇 개 안 찍혀요. 속도 변화를 제대로 보려면 낙하 동안 <b>30개 이상</b>의 점이 필요해요. 대신 너무 촘촘하면 위치 차이로 계산하는 속도의 잡음이 커지고 데이터만 쓸데없이 많아져요(1초에 50번 이하).”</div></div>
           <div class="stage-card"><div id="s2-order"></div></div>
           <div class="stage-card" style="margin-top:14px">
-            <div class="canvas-wrap stage"><canvas id="c-rate" width="900" height="240"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c-rate" width="900" height="240"></canvas></div>
             <div class="controls">
               <div class="ctrl-group" style="flex:1 1 100%">
                 <div class="ctrl-label">1초에 측정하는 횟수<span class="val" id="rt-v-val">5번</span></div>
@@ -136,7 +137,7 @@
         <section class="scene" data-title="그래프로 종단 속도 찾기">
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">하린</span>“모은 데이터를 그려 보자. 위치-시간 그래프, 속도-시간 그래프, 막대 차트 가운데 종단 속도가 가장 잘 보이는 건 뭘까? 필터를 몇 장 겹쳐야 종단 속도가 <b>2 m/s</b>가 될까?”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-fall" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c-fall" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">그림의 종류</div>
@@ -182,6 +183,7 @@
         <section class="scene" data-title="스마트폰 나침반">
           <div class="story narr"><div class="who">🧲</div><div class="say"><span class="name">이야기</span>스마트폰에는 방향을 알려 주는 지자기 센서가 들어 있습니다. 탐구 동아리는 앱으로 교실·과학실·복도·운동장의 자기장 세기(μT, 마이크로테슬라)를 여러 번 쟀습니다. 첫 결과는 교실 55, 과학실 68. 누군가 외칩니다. “가설이 맞았어!”</div></div>
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지도 선생님</span>“한 번씩 잰 두 값으로 결론을 내려도 될까요?”</div></div>
+          <figure class="hero-art"><img src="img/school-magnet.webp" alt="학교 건물을 인형의 집처럼 열어 놓은 모형. 교실, 과학실, 복도, 운동장 트랙 위에 학생이 한 명씩 서서 나침반이 뜬 스마트폰을 들고 자기장을 재고 있고, 바닥에는 측정 자리를 표시한 동그란 표지가 있다." width="900" height="900" loading="lazy"><figcaption><b>같은 곳의 자기장도 잴 때마다 조금씩 다르게 나옵니다</b> 스마트폰의 지자기 센서로 교실, 과학실, 복도, 운동장의 자기장 세기를 잴 수 있습니다. 그런데 같은 곳에서도 잴 때마다 값이 조금씩 달라집니다. 한두 번 잰 값으로 ‘과학실의 자기장이 더 세다’고 말해도 되는지 이 이야기에서 따져 봅니다.</figcaption></figure>
           <div class="gate loose" id="g3"></div>
         </section>
 
@@ -195,7 +197,7 @@
         <section class="scene" data-title="측정 횟수와 오차 막대">
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">선생님</span>“평균 위에 그린 오차 막대는 평균이 참값에서 벗어날 수 있는 정도(표준 오차 = 표준 편차 ÷ √n)를 보여 줘요. 측정 횟수를 늘리며 막대가 어떻게 되는지 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c4" width="900" height="320"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c4" width="900" height="320"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="c4-read"></div>
               <div class="ctrl-group">
@@ -211,7 +213,7 @@
         <section class="scene" data-title="가설 검증 — 막대가 겹치는가">
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">선생님</span>“두 장소의 평균 ± 2 × 표준 오차 막대가 <b>겹치지 않으면</b> 차이가 우연이 아니라고 말할 근거가 생겨요. 겹치면 ‘차이가 있다’고 주장하기 어렵습니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-ht" width="900" height="280"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c-ht" width="900" height="280"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">비교할 두 장소</div>
@@ -256,13 +258,14 @@
         <section class="scene" data-title="얇게 바른 선크림">
           <div class="story narr"><div class="who">☀️</div><div class="say"><span class="name">이야기</span>선크림 제품의 자외선 차단 지수(SPF)는 피부 1 cm²에 <b>2.0 mg</b>을 발랐을 때를 기준으로 잽니다. 그런데 설문해 보니 친구들은 대부분 그 절반도 안 되게 바릅니다. 탐구 모둠은 SPF 50 선크림을 <b>0.5, 1.0, 1.5 mg/cm²</b>로 발라 자외선 차단율을 쟀습니다.</div></div>
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">모둠원 서하</span>“측정한 세 점을 직선으로 이어서 2.0 mg 일 때를 예측하면 되지 않을까?”</div></div>
+          <figure class="hero-art"><img src="img/sunscreen-lab.webp" alt="학교 실험대를 블록처럼 잘라 낸 모형. 보랏빛으로 빛나는 자외선 등 아래에 선크림을 얇게, 중간으로, 두껍게 바른 투명 유리판 세 장이 놓여 있고, 앞에는 자외선 측정기 세 대가 있다. 전자저울 위에는 선크림 튜브가, 공책에는 점 세 개를 지나는 휘어진 그래프가 그려져 있다. 실험복과 보안경을 쓴 학생 셋이 뒷모습으로 서 있다." width="900" height="900" loading="lazy"><figcaption><b>선크림 차단 지수는 정해진 두께로 발랐을 때의 값입니다</b> 선크림의 차단 지수는 피부 1 cm²에 2.0 mg을 발랐을 때를 기준으로 잽니다. 모둠은 더 얇게 바른 세 경우의 차단율을 재었습니다. 잰 범위 밖의 값을 어떤 모형으로 예측해야 하는지 이 이야기에서 정해 봅니다. <span class="art-note">⚠ 자외선 자체는 눈에 보이지 않습니다. 보랏빛은 등에서 함께 나오는 가시광선입니다.</span></figcaption></figure>
           <div class="gate loose" id="g4"></div>
         </section>
 
         <section class="scene" data-title="안쪽 예측, 바깥 예측">
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">선생님</span>“데이터 <b>범위 안</b>의 빈 곳을 예측하는 것이 <b>내삽</b>, <b>범위 밖</b>을 예측하는 것이 <b>외삽</b>이에요. 두 방법에서 불확실성(음영)이 어떻게 다른지, 측정 오차를 바꿔 가며 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c5" width="900" height="320"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c5" width="900" height="320"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">예측 방법</div>
@@ -281,7 +284,7 @@
         <section class="scene" data-title="선크림 결론 — 어떤 선으로 예측할까">
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">선생님</span>“2.0 mg/cm²는 측정 범위 밖이니 외삽이에요. 직선과 ‘점점 100%에 가까워지는 곡선’ 가운데 어떤 모형으로 예측할지 골라, 권장량을 발랐을 때의 차단율을 예측해 보세요. 예측이 끝나면 실제로 2.0 mg을 발라 확인할 수 있어요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-sun" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c-sun" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">예측 모형</div>

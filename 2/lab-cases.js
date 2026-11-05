@@ -23,19 +23,25 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, sd = 0.2, mu = 4.9;
       function pass() { return Phi((5.50 - mu) / sd) - Phi((4.74 - mu) / sd); }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 560, y1 = 230;
-        function X(g) { return x0 + (g - 4.4) / 1.4 * (x1 - x0); }
-        H.axes(ctx, x0, 30, x1, y1);
-        H.box(ctx, X(4.74), 30, X(5.50) - X(4.74), y1 - 30, H.v("--green"), 0.12);
-        var pts = []; for (var g = 4.4; g <= 5.8; g += 0.005) { var d = Math.exp(-Math.pow(g - mu, 2) / (2 * sd * sd)); pts.push([X(g), y1 - d * 170]); }
-        H.line(ctx, pts, H.v("--brand"), 2.5);
-        [4.74, 5.50].forEach(function (g) { H.dash(ctx, X(g), 30, X(g), y1, H.v("--rose"), 1.5); H.text(ctx, g.toFixed(2) + " g", X(g), y1 + 16, { s: 10.5, w: "800", a: "center", c: H.v("--rose-700") }); });
-        var p = pass();
-        H.rows(ctx, 620, 50, [["기계", sd === 0.1 ? "A (표준 편차 0.10 g)" : "B (표준 편차 0.20 g)"], ["평균 무게", mu.toFixed(2) + " g"], ["합격률", (p * 100).toFixed(2) + "%", p >= 0.99 ? "--green-700" : "--rose-700", true]], 56);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, p = pass(), ok = p >= 0.99;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH, { x: 760, y: 118, rx: 80, ry: 10 });
+        K.card(ctx, 10, 10, 600, CH - 20, "과자 한 봉지의 무게 분포");
+        var g = SP.chart(ctx, { x: 16, y: 48, w: 586, h: CH - 62, x0: 4.4, x1: 5.8, y0: 0, y1: 1.05, xt: 7, yt: 1, xf: function (v) { return v.toFixed(1) + " g"; }, yf: function () { return ""; }, pl: 20 });
+        ctx.fillStyle = "rgba(15,159,118,.14)"; ctx.fillRect(g.X(4.74), g.T, g.X(5.50) - g.X(4.74), g.B - g.T);
+        var pts = []; for (var gg = 4.4; gg <= 5.8; gg += 0.005) pts.push([gg, Math.exp(-Math.pow(gg - mu, 2) / (2 * sd * sd))]);
+        ctx.fillStyle = "rgba(28,126,214,.15)"; ctx.beginPath(); ctx.moveTo(g.X(4.4), g.B); pts.forEach(function (q) { ctx.lineTo(g.X(q[0]), g.Y(q[1])); }); ctx.lineTo(g.X(5.8), g.B); ctx.closePath(); ctx.fill();
+        SP.plot(ctx, g, pts, LT.blue);
+        [4.74, 5.50].forEach(function (v) { K.line(ctx, { x: g.X(v), y: g.T }, { x: g.X(v), y: g.B }, LT.red, 1.6, [5, 4]); SP.lbl(ctx, v.toFixed(2) + " g", g.X(v), g.T + 12, { s: 10.5, a: "center", c: LT.red }); });
+        /* 전자저울 미니어처 */
+        var sx = 760, sy = 78;
+        SP.poly(ctx, [{ x: sx - 50, y: sy + 10 }, { x: sx + 40, y: sy + 10 }, { x: sx + 56, y: sy - 4 }, { x: sx - 34, y: sy - 4 }], "#eef1f5");
+        ctx.fillStyle = "#b5bfcc"; ctx.fillRect(sx - 50, sy + 10, 90, 18); SP.poly(ctx, [{ x: sx + 40, y: sy + 10 }, { x: sx + 56, y: sy - 4 }, { x: sx + 56, y: sy + 14 }, { x: sx + 40, y: sy + 28 }], "#8a96a8");
+        ctx.fillStyle = "#1c2230"; ctx.fillRect(sx - 34, sy + 14, 44, 11); K.t(ctx, mu.toFixed(2), sx - 12, sy + 23, { s: 9.5, w: "900", a: "center", c: "#5affc0" });
+        SP.poly(ctx, [{ x: sx - 24, y: sy }, { x: sx + 20, y: sy }, { x: sx + 30, y: sy - 8 }, { x: sx - 14, y: sy - 8 }], "#f59f00");
+        SP.card(ctx, 624, 140, 262, CH - 152, null, [["기계", sd === 0.1 ? "A (σ 0.10 g)" : "B (σ 0.20 g)"], ["평균 무게", mu.toFixed(2) + " g", LT.blue], ["합격률", (p * 100).toFixed(2) + "%", ok ? LT.green : LT.red]], null, { top: 28, gap: 28 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.seg({ label: "기계", value: 0.2, options: [{ v: 0.1, t: "A · 표준 편차 0.10 g" }, { v: 0.2, t: "B · 표준 편차 0.20 g" }], onPick: function (x) { sd = +x; draw(); api.changed(); } });
       api.slider({ label: "평균 무게", min: 4.6, max: 5.6, step: 0.02, value: 4.9, fmt: function (x) { return x.toFixed(2) + " g"; }, onInput: function (x) { mu = Math.round(x * 100) / 100; draw(); api.changed(); } });
       api.info("종 모양 곡선은 셔틀콕 무게의 분포입니다. 초록 구간 밖으로 나간 넓이가 불량입니다.");
@@ -72,18 +78,21 @@ window.sthLab({
       });
       function sub() { return view === "all" ? D : D.filter(function (d) { return Math.abs(d.T - band) <= 2.5; }); }
       function corr(a) { var n = a.length; if (n < 3) return 0; var mx = 0, my = 0; a.forEach(function (d) { mx += d.ice; my += d.acc; }); mx /= n; my /= n; var sxy = 0, sxx = 0, syy = 0; a.forEach(function (d) { sxy += (d.ice - mx) * (d.acc - my); sxx += (d.ice - mx) * (d.ice - mx); syy += (d.acc - my) * (d.acc - my); }); return sxy / Math.sqrt(sxx * syy); }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 540, y0 = 30, y1 = 230, a = sub(), r = corr(a);
-        function X(v) { return x0 + (v + 20) / 270 * (x1 - x0); }
-        function Y(v) { return y1 - v / 8 * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        H.text(ctx, "아이스크림 판매량 →", x1, y1 + 16, { s: 10.5, a: "right", c: H.v("--mist") });
-        H.text(ctx, "물놀이 사고 ↑", x0 + 4, y0 + 10, { s: 10.5, c: H.v("--mist") });
-        D.forEach(function (d) { var on = a.indexOf(d) >= 0; H.dot(ctx, X(d.ice + (d.acc * 7 % 5)), Y(Math.min(8, d.acc)), on ? 4 : 3, on ? H.v("--coral") : H.v("--line")); });
-        H.rows(ctx, 600, 60, [["보기", view === "all" ? "모든 날" : "기온 " + (band - 2.5) + " ~ " + (band + 2.5) + " ℃ 인 날"], ["날 수", a.length + "일"], ["상관 계수 r", r.toFixed(2), Math.abs(r) <= 0.2 ? "--green-700" : "--rose-700", true]], 56);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, a = sub(), r = corr(a), ok = Math.abs(r) <= 0.2;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 580, CH - 20, "아이스크림 판매량과 물놀이 사고");
+        var g = SP.chart(ctx, { x: 16, y: 48, w: 566, h: CH - 62, x0: -20, x1: 250, y0: 0, y1: 8, xt: 5, yt: 4, pl: 34, xl: "아이스크림 판매량 →", yl: "물놀이 사고 ↑" });
+        D.forEach(function (d) { var on = a.indexOf(d) >= 0, px = g.X(d.ice + (d.acc * 7 % 5)), py = g.Y(Math.min(8, d.acc)); if (on) K.planet(ctx, px, py, 4.5, "#ffb0a0", "#c0301a"); else { ctx.fillStyle = "rgba(92,112,134,.3)"; ctx.beginPath(); ctx.arc(px, py, 3, 0, 6.2832); ctx.fill(); } });
+        /* 온도계 미니어처 */
+        var tx = 740, ty = 40;
+        ctx.fillStyle = "#e6ebf2"; ctx.beginPath(); ctx.roundRect(tx - 9, ty, 18, 100, 9); ctx.fill(); ctx.strokeStyle = "rgba(20,40,90,.3)"; ctx.stroke();
+        var lvl = view === "all" ? 70 : 20 + band * 2;
+        ctx.fillStyle = LT.red; ctx.fillRect(tx - 3, ty + 100 - lvl, 6, lvl); K.planet(ctx, tx, ty + 108, 13, "#ff8a8a", "#a8202e");
+        K.t(ctx, view === "all" ? "모든 날" : (band - 2.5) + "~" + (band + 2.5) + " ℃", tx + 22, ty + 60, { s: 12, w: "900", c: LT.ink });
+        SP.card(ctx, 604, 150, 282, CH - 162, null, [["날 수", a.length + "일"], ["상관 계수 r", r.toFixed(2), ok ? LT.green : LT.red]], [ok ? "기온을 같게 하니 관계가 사라졌다" : "강한 상관 — 원인일까?", ok], { top: 28, gap: 28 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.seg({ label: "보기", value: "all", options: [{ v: "all", t: "모든 날" }, { v: "band", t: "기온이 비슷한 날끼리" }], onPick: function (x) { view = x; draw(); api.changed(); } });
       api.slider({ label: "비교할 기온대의 가운데", min: 10, max: 30, step: 5, value: 25, fmt: function (x) { return x + " ℃ (±2.5)"; }, onInput: function (x) { band = x; draw(); api.changed(); } });
       api.info("상관 계수 r은 −1~1 사이의 값으로, 1에 가까울수록 함께 늘고 0에 가까울수록 관계가 없습니다.");
@@ -117,17 +126,29 @@ window.sthLab({
       var V = [[200, 300], [700, 120], [1100, 500], [1600, 200], [1900, 80]];
       function total(p) { return V.reduce(function (a, q) { return a + q[1] * Math.abs(q[0] - p); }, 0); }
       var best = 1e18, bp = 0; for (var p = 0; p <= 2000; p += 10) { var tt = total(p); if (tt < best) { best = tt; bp = p; } }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 40, x1 = 560, y = 130;
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, x0 = 40, x1 = 560, y = 150, t = total(pos), ok = Math.abs(pos - bp) <= 50;
         function X(m) { return x0 + m / 2000 * (x1 - x0); }
-        H.line(ctx, [[x0, y], [x1, y]], H.v("--mist"), 8);
-        V.forEach(function (q) { var r = 6 + Math.sqrt(q[1]) * 0.8; H.dot(ctx, X(q[0]), y - 40, r, H.v("--teal")); H.text(ctx, q[1] + "명", X(q[0]), y - 40 - r - 6, { s: 10.5, w: "800", a: "center" }); H.text(ctx, q[0] + "", X(q[0]), y + 28, { s: 10, a: "center", c: H.v("--mist") }); });
-        H.text(ctx, "🚏", X(pos), y + 6, { s: 26, a: "center" });
-        var t = total(pos);
-        H.rows(ctx, 620, 60, [["정류장 위치", pos.toLocaleString() + " m"], ["걷는 거리 합", (t / 1000).toFixed(0) + " 명·km", Math.abs(pos - bp) <= 50 ? "--green-700" : "--rose-700", true], ["1인 평균", (t / 1200).toFixed(0) + " m"]], 56);
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH, { x: 300, y: 214, rx: 280, ry: 14 });
+        /* 마을 길 블록(입체 띠) + 마을마다 집 미니어처 */
+        SP.poly(ctx, [{ x: x0 - 20, y: y + 20 }, { x: x1 + 20, y: y + 20 }, { x: x1 + 44, y: y - 30 }, { x: x0 + 4, y: y - 30 }], "#bcd59a");
+        ctx.fillStyle = "#8a6a44"; ctx.fillRect(x0 - 20, y + 20, x1 - x0 + 40, 12);
+        SP.poly(ctx, [{ x: x0 - 16, y: y + 10 }, { x: x1 + 18, y: y + 10 }, { x: x1 + 26, y: y - 6 }, { x: x0 - 8, y: y - 6 }], "#5b6474");
+        ctx.save(); ctx.setLineDash([10, 8]); ctx.strokeStyle = "#f5d36b"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0 - 12, y + 2); ctx.lineTo(x1 + 22, y + 2); ctx.stroke(); ctx.restore();
+        V.forEach(function (q, qi) {
+          var nh = Math.max(1, Math.round(q[1] / 80));
+          for (var h = 0; h < nh; h++) { var hx = X(q[0]) - nh * 7 + h * 14 + 10, hy = y - 22 - (h % 2) * 6; SP.poly(ctx, [{ x: hx - 6, y: hy }, { x: hx + 6, y: hy }, { x: hx + 6, y: hy - 10 }, { x: hx - 6, y: hy - 10 }], "#efe7da"); SP.poly(ctx, [{ x: hx - 8, y: hy - 10 }, { x: hx + 8, y: hy - 10 }, { x: hx, y: hy - 18 }], "#c0553f"); }
+          K.pill(ctx, q[1] + "명", X(q[0]) + 10, y - 50 - (qi % 2) * 14, { s: 10.5, a: "center", c: KC9(K) });
+          K.t(ctx, q[0] + " m", X(q[0]), y + 48, { s: 10, w: "700", a: "center", c: LT.mute });
+        });
+        var px = X(pos);
+        ctx.strokeStyle = "#3d4452"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(px, y + 14); ctx.lineTo(px, y - 34); ctx.stroke();
+        ctx.fillStyle = "#1c7ed6"; ctx.beginPath(); ctx.roundRect(px - 14, y - 52, 28, 20, 5); ctx.fill(); K.t(ctx, "🚏", px, y - 37, { s: 13, a: "center" });
+        K.t(ctx, "정류장 " + pos.toLocaleString() + " m", px, y - 60, { s: 11, w: "900", a: "center", c: LT.blue });
+        SP.card(ctx, 600, 14, 286, CH - 28, "모두가 걷는 거리의 합", [["정류장 위치", pos.toLocaleString() + " m", LT.blue], ["걷는 거리 합", (t / 1000).toFixed(0) + " 명·km", ok ? LT.green : LT.red], ["1인 평균", (t / 1200).toFixed(0) + " m"]], [ok ? "걷는 거리 합이 가장 작은 곳" : "더 줄일 수 있다", ok], { top: 60, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+      function KC9(K) { return K.C.ink; }
+    cv.canvas._redraw = draw;
       api.slider({ label: "정류장 위치", min: 0, max: 2000, step: 10, value: 500, fmt: function (x) { return x.toLocaleString() + " m"; }, onInput: function (x) { pos = x; draw(); api.changed(); } });
       api.info("정류장을 조금 옮길 때 가까워지는 사람과 멀어지는 사람의 수를 비교해 보세요. 가까워지는 사람이 더 많으면 그쪽으로 옮기는 것이 낫습니다.");
       draw();

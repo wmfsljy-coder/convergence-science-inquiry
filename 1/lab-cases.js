@@ -21,21 +21,30 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, t = 40;
       function depth(us) { return 1540 * us * 1e-6 / 2 * 100; }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 80, y0 = 40, s = 18, d = depth(t);
-        H.box(ctx, x0, y0, 400, 12 * s, H.v("--coral-100"), 1);
-        H.box(ctx, x0 + 120, y0 + 7.4 * s, 160, 1.2 * s, H.v("--rose"), 0.7);
-        H.text(ctx, "장기 (8 cm)", x0 + 200, y0 + 8.3 * s, { s: 11.5, w: "800", a: "center" });
-        H.box(ctx, x0 + 170, y0 - 22, 60, 22, H.v("--mist"), 1);
-        H.text(ctx, "탐촉자", x0 + 200, y0 - 7, { s: 10.5, w: "800", a: "center", c: H.v("--on-accent") });
-        H.dash(ctx, x0, y0 + d * s, x0 + 400, y0 + d * s, H.v("--brand"), 2);
-        H.arrow(ctx, x0 + 200, y0 + 2, x0 + 200, Math.min(y0 + d * s, y0 + 12 * s), H.v("--brand"), 2, 8);
-        [0, 4, 8, 12].forEach(function (c) { H.text(ctx, c + " cm", x0 - 8, y0 + c * s + 4, { s: 10, a: "right", c: H.v("--mist") }); });
-        var ok = Math.abs(d - 8) <= 0.2;
-        H.rows(ctx, 560, 60, [["메아리 시간", t + " μs"], ["계산된 깊이", d.toFixed(2) + " cm", ok ? "--green-700" : "--rose-700", true]], 70);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, d = depth(t), ok = Math.abs(d - 8) <= 0.2;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, W, CH, { x: 290, y: 246, rx: 260, ry: 12 });
+        /* 몸속 단면 블록(피부 · 지방 · 근육) + 장기 + 탐촉자 */
+        var x0 = 80, y0 = 66, s = 14, bw = 400, bh = 12 * s, DX = 22, DY = -16;
+        SP.poly(ctx, [{ x: x0, y: y0 }, { x: x0 + bw, y: y0 }, { x: x0 + bw + DX, y: y0 + DY }, { x: x0 + DX, y: y0 + DY }], "#f3c9b0");
+        SP.poly(ctx, [{ x: x0 + bw, y: y0 }, { x: x0 + bw + DX, y: y0 + DY }, { x: x0 + bw + DX, y: y0 + bh + DY }, { x: x0 + bw, y: y0 + bh }], "#c98a72");
+        [["#f6d0b8", 0, .3], ["#f4dcae", .3, 2.2], ["#e39a8c", 2.2, 12]].forEach(function (l) { ctx.fillStyle = l[0]; ctx.fillRect(x0, y0 + l[1] * s, bw, (l[2] - l[1]) * s); });
+        ctx.strokeStyle = "rgba(150,70,60,.18)"; ctx.lineWidth = 1; for (var q = 3; q < 12; q += 1.2) { ctx.beginPath(); ctx.moveTo(x0, y0 + q * s); ctx.bezierCurveTo(x0 + 130, y0 + q * s - 6, x0 + 260, y0 + q * s + 6, x0 + bw, y0 + q * s); ctx.stroke(); }
+        var og = ctx.createRadialGradient(x0 + 180, y0 + 7.8 * s, 4, x0 + 200, y0 + 8.6 * s, 90); og.addColorStop(0, "#c2446a"); og.addColorStop(1, "#7a1f3e");
+        ctx.fillStyle = og; ctx.beginPath(); ctx.ellipse(x0 + 200, y0 + 8.6 * s, 84, 1.2 * s * .8 + 6, 0, 0, 6.2832); ctx.fill();
+        K.pill(ctx, "장기 (8 cm)", x0 + 300, y0 + 8.6 * s + 5, { s: 11, c: "#ffd2dc", box: [0, 600] });
+        SP.cyl(ctx, x0 + 200, y0 - 30, 22, 8, 28, "slate");
+        ctx.fillStyle = "#2a303b"; ctx.fillRect(x0 + 196, y0 - 50, 8, 22);
+        K.pill(ctx, "탐촉자", x0 + 232, y0 - 22, { s: 10.5, c: K.C.ink });
+        var dy = Math.min(y0 + d * s, y0 + bh);
+        K.line(ctx, { x: x0, y: y0 + d * s }, { x: x0 + bw, y: y0 + d * s }, LT.blue, 2.4, [6, 4]);
+        for (var w = 1; w <= 4; w++) { var yy = y0 + (d * s) * w / 5; ctx.strokeStyle = "rgba(28,126,214," + (0.7 - w * .12) + ")"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x0 + 200, yy, 18 + w * 4, Math.PI * .2, Math.PI * .8); ctx.stroke(); }
+        K.arrow(ctx, { x: x0 + 200, y: y0 + 2 }, { x: x0 + 200, y: dy }, LT.blue, 2.4, 9);
+        [0, 4, 8, 12].forEach(function (c) { K.t(ctx, c + " cm", x0 - 8, y0 + c * s + 4, { s: 10, w: "700", a: "right", c: LT.mute }); });
+        SP.card(ctx, 540, 14, 346, CH - 28, "깊이 = 소리 속력 × 시간 ÷ 2", [["메아리 시간", t + " μs"], ["몸속 소리 속력", "1,540 m/s", LT.mute], ["계산된 깊이", d.toFixed(2) + " cm", ok ? LT.green : LT.red]], [ok ? "장기 위치(8 cm)와 맞는다" : "점선이 장기에 맞지 않는다", ok], { top: 62, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.slider({ label: "메아리를 듣는 시간", min: 20, max: 200, step: 1, value: 40, fmt: function (x) { return x + " μs"; }, onInput: function (x) { t = x; draw(); api.changed(); } });
       api.info("깊이 = 소리의 속력 × 시간 ÷ 2. 소리는 장기까지 갔다가 돌아오므로 2로 나눕니다. 1 μs = 100만 분의 1초.");
       draw();
@@ -66,22 +75,22 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, n = 200;
       function moe(k) { return 0.98 / Math.sqrt(k) * 100; }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 540, y0 = 30, y1 = 220;
-        function X(k) { return x0 + (k - 100) / 2900 * (x1 - x0); }
-        function Y(m) { return y1 - m / 10 * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        var pts = []; for (var k = 100; k <= 3000; k += 20) pts.push([X(k), Y(Math.min(10, moe(k)))]);
-        H.line(ctx, pts, H.v("--brand"), 2.5);
-        H.dash(ctx, x0, Y(3.1), x1, Y(3.1), H.v("--amber"), 1.5);
-        H.text(ctx, "±3.1%p", x1 + 4, Y(3.1) + 4, { s: 10.5, w: "800", c: H.v("--amber-700") });
-        H.dot(ctx, X(n), Y(Math.min(10, moe(n))), 6, H.v("--coral"));
-        [100, 1000, 2000, 3000].forEach(function (k) { H.text(ctx, k + "명", X(k), y1 + 16, { s: 10, a: "center", c: H.v("--mist") }); });
-        var ok = moe(n) <= 3.1 + 1e-9 && n <= 1100;
-        H.rows(ctx, 620, 60, [["조사 인원", n.toLocaleString() + "명"], ["오차 한계", "±" + moe(n).toFixed(2) + "%p", ok ? "--green-700" : "--rose-700", true]], 70);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, ok = moe(n) <= 3.1 + 1e-9 && n <= 1100;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 600, CH - 20, "조사 인원과 오차 한계(95%)");
+        var g = SP.chart(ctx, { x: 16, y: 52, w: 586, h: CH - 66, x0: 100, x1: 3000, y0: 0, y1: 10, xt: 5, yt: 5, xf: function (v) { return Math.round(v).toLocaleString() + "명"; }, yf: function (v) { return v + "%p"; }, pl: 48 });
+        var pts = []; for (var k = 100; k <= 3000; k += 20) pts.push([k, Math.min(10, moe(k))]);
+        SP.plot(ctx, g, pts, LT.blue);
+        K.line(ctx, { x: g.L, y: g.Y(3.1) }, { x: g.R, y: g.Y(3.1) }, "#d9a400", 1.6, [5, 4]);
+        SP.lbl(ctx, "±3.1%p", g.R - 4, g.Y(3.1) - 6, { s: 10.5, a: "right", c: "#b86e00" });
+        ctx.fillStyle = ok ? LT.green : LT.red; ctx.beginPath(); ctx.arc(g.X(n), g.Y(Math.min(10, moe(n))), 6.5, 0, 6.2832); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke();
+        /* 설문지 더미 미니어처 */
+        for (var p = 0; p < Math.min(10, Math.ceil(n / 300)); p++) SP.poly(ctx, [{ x: 700, y: 92 - p * 4 }, { x: 790, y: 92 - p * 4 }, { x: 810, y: 78 - p * 4 }, { x: 720, y: 78 - p * 4 }], p % 2 ? "#f1f3f6" : "#ffffff", "rgba(20,40,90,.2)");
+        SP.card(ctx, 624, 110, 262, CH - 122, null, [["조사 인원", n.toLocaleString() + "명", LT.blue], ["오차 한계", "±" + moe(n).toFixed(2) + "%p", ok ? LT.green : LT.red]], [ok ? "±3.1%p 안 · 1,100명 이하" : (moe(n) > 3.1 ? "오차가 크다" : "인원이 너무 많다"), ok], { top: 30, gap: 28 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.slider({ label: "조사 인원", min: 100, max: 3000, step: 50, value: 200, fmt: function (x) { return x.toLocaleString() + "명"; }, onInput: function (x) { n = x; draw(); api.changed(); } });
       api.info("오차 한계는 √n에 반비례합니다. 인원이 많을수록 줄지만, 줄어드는 속도는 점점 느려집니다.");
       draw();
@@ -112,17 +121,30 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(240), ctx = cv.ctx, W = cv.W, fps = 60;
       function gap(f) { return 20 / f * 100; }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 40, sc = 2.2, g = gap(fps);
-        H.text(ctx, "장면마다 찍힌 공의 위치 (0.5 m 구간)", x0, 30, { s: 12.5, w: "800" });
-        for (var d = 0; d <= 50 + 1e-9; d += g) H.dot(ctx, x0 + d * sc * 3, 120, 9, H.v("--coral"));
-        H.line(ctx, [[x0, 150], [x0 + 150 * sc, 150]], H.v("--line"), 1.5);
-        H.text(ctx, "0", x0, 168, { s: 10, c: H.v("--mist") }); H.text(ctx, "50 cm", x0 + 150 * sc, 168, { s: 10, a: "right", c: H.v("--mist") });
-        var ok = g <= 10 + 1e-9 && fps <= 240;
-        H.rows(ctx, 620, 60, [["촬영 속도", fps + " fps"], ["장면 사이 이동", g.toFixed(1) + " cm", ok ? "--green-700" : "--rose-700", true]], 70);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, x0 = 60, sc = 6.2, g = gap(fps), ok = g <= 10 + 1e-9 && fps <= 240;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, W, CH, { x: 230, y: 196, rx: 220, ry: 12 });
+        /* 나무 레일 위를 굴러가는 공 + 장면마다 찍힌 자리 */
+        SP.poly(ctx, [{ x: x0 - 20, y: 150 }, { x: x0 + 50 * sc + 20, y: 150 }, { x: x0 + 50 * sc + 36, y: 136 }, { x: x0 - 4, y: 136 }], "#e4bd86");
+        var fg = ctx.createLinearGradient(0, 150, 0, 164); fg.addColorStop(0, "#b47e45"); fg.addColorStop(1, "#835729"); ctx.fillStyle = fg; ctx.fillRect(x0 - 20, 150, 50 * sc + 40, 14);
+        ctx.strokeStyle = "rgba(90,55,20,.6)"; ctx.lineWidth = 1;
+        for (var c = 0; c <= 50; c += 5) { ctx.beginPath(); ctx.moveTo(x0 + c * sc, 150); ctx.lineTo(x0 + c * sc + 8, 142); ctx.stroke(); }
+        var first = true;
+        for (var d = 0; d <= 50 + 1e-9; d += g) { ctx.globalAlpha = first ? 1 : .8; K.planet(ctx, x0 + d * sc + 6, 128, 9, "#ffb0a0", "#a8301a"); ctx.globalAlpha = 1; first = false; }
+        K.t(ctx, "0", x0, 182, { s: 10, w: "700", c: LT.mute }); K.t(ctx, "50 cm", x0 + 50 * sc, 182, { s: 10, w: "700", a: "right", c: LT.mute });
+        K.t(ctx, "장면마다 찍힌 공의 위치 (0.5 m 구간)", 20, 30, { s: 12.5, w: "900", c: LT.ink });
+        /* 고속 카메라 미니어처 */
+        var cx = 480, cy = 70;
+        SP.poly(ctx, [{ x: cx - 34, y: cy - 14 }, { x: cx + 26, y: cy - 14 }, { x: cx + 36, y: cy - 22 }, { x: cx - 24, y: cy - 22 }], "#5b6474");
+        ctx.fillStyle = "#2a303b"; ctx.beginPath(); ctx.roundRect(cx - 34, cy - 14, 60, 34, 5); ctx.fill();
+        SP.cyl(ctx, cx - 44, cy + 3, 6, 12, 0, "iron");
+        ctx.fillStyle = "#1c2230"; ctx.beginPath(); ctx.ellipse(cx - 46, cy + 3, 7, 13, 0, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = "#e03131"; ctx.beginPath(); ctx.arc(cx + 16, cy - 6, 3, 0, 6.2832); ctx.fill();
+        ctx.strokeStyle = "#3d4452"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cx - 4, cy + 20); ctx.lineTo(cx - 20, cy + 70); ctx.moveTo(cx - 4, cy + 20); ctx.lineTo(cx + 12, cy + 70); ctx.stroke();
+        SP.card(ctx, 600, 14, 286, CH - 28, "장면 사이에 공이 움직인 거리", [["촬영 속도", fps + " fps", LT.blue], ["장면 사이 이동", g.toFixed(1) + " cm", ok ? LT.green : LT.red]], [ok ? "10 cm 이하 · 240 fps 이하" : (g > 10 ? "너무 띄엄띄엄 찍힌다" : "카메라가 너무 비싸다"), ok], { top: 62, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.slider({ label: "촬영 속도 (1초에 찍는 장수)", min: 30, max: 480, step: 30, value: 60, fmt: function (x) { return x + " fps"; }, onInput: function (x) { fps = x; draw(); api.changed(); } });
       api.info("장면 사이 이동 거리 = 속력 ÷ 촬영 속도. 20 m/s를 cm로 바꾸면 2,000 cm/s.");
       draw();

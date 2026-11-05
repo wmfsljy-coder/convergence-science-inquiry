@@ -41,12 +41,30 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, y = 2005, why = "none";
       function val(yy) { for (var i = 0; i < Y.length; i++) if (Y[i][0] === yy) return Y[i]; return [yy, 0, 0]; }
-      function draw() {
-        chart(H, ctx, W, cv.H, 1, y);
-        var v = val(y);
-        H.rows(ctx, 680, 50, [["고른 해", y + "년", "--amber-700"], ["전체 기록", v[1] + " 건", null, true], ["그 가운데 사람 관찰", v[2] + " 건"]], 60);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, v = val(y);
+        gbif19(ctx, W, cv.H, 1, y);
+        SP.card(ctx, 664, 14, 222, cv.H - 28, "고른 해 · " + y + "년", [["전체 기록", v[1] + " 건", LT.blue], ["그 가운데 사람 관찰", v[2] + " 건", LT.green]], null, { top: 60, gap: 32 });
       }
-      cv.canvas._redraw = draw;
+      function gbif19(ctx, W, CH, i, pick) {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 644, CH - 20, i === 2 ? "사람이 관찰해 올린 반딧불이 기록 수" : "반딧불이 기록 수 (전체)");
+        var x0 = 60, x1 = 640, y0 = 46, y1 = CH - 36, mx = Math.max.apply(null, Y.map(function (r) { return r[i]; })) * 1.1 || 1, DX = 5, DY = -4;
+        function X(yy) { return x0 + (yy - 2004.5) / 21 * (x1 - x0); }
+        function Yv(v) { return y1 - v / mx * (y1 - y0); }
+        ctx.strokeStyle = LT.grid; ctx.lineWidth = 1;
+        [0, 0.5, 1].forEach(function (f) { var vv = mx / 1.1 * f; ctx.beginPath(); ctx.moveTo(x0, Yv(vv)); ctx.lineTo(x1, Yv(vv)); ctx.stroke(); K.t(ctx, String(Math.round(vv)), x0 - 6, Yv(vv) + 4, { s: 10, w: "600", a: "right", c: LT.mute }); });
+        [2005, 2010, 2015, 2020, 2025].forEach(function (yy) { K.t(ctx, String(yy), X(yy), y1 + 15, { s: 10, w: "600", a: "center", c: LT.mute }); });
+        Y.forEach(function (r) {
+          var on = pick === r[0], c = SP.mt(on ? "yellow" : (i === 2 ? "green" : "blue")), xx = X(r[0]) - 9, top = Yv(r[i]);
+          SP.poly(ctx, [{ x: xx + 18, y: y1 }, { x: xx + 18 + DX, y: y1 + DY }, { x: xx + 18 + DX, y: top + DY }, { x: xx + 18, y: top }], c[2]);
+          SP.poly(ctx, [{ x: xx, y: top }, { x: xx + 18, y: top }, { x: xx + 18 + DX, y: top + DY }, { x: xx + DX, y: top + DY }], c[0]);
+          ctx.fillStyle = c[1]; ctx.fillRect(xx, top, 18, y1 - top);
+        });
+        K.line(ctx, { x: x0, y: y1 }, { x: x1, y: y1 }, LT.line, 1.5);
+      }
+    cv.canvas._redraw = draw;
       api.slider({ label: "연도", min: 2005, max: 2025, step: 1, value: 2005, fmt: function (x) { return x + "년"; }, onInput: function (x) { y = x; api.changed(); draw(); } });
       api.seg({ label: "기록이 많은 까닭", value: "none", options: [{ v: "boom", t: "그해 반딧불이가 크게 늘어서" }, { v: "spec", t: "한 기관의 표본 기록이 그해로 한꺼번에 들어가서" }, { v: "weather", t: "그해 날씨가 맑아서" }], onPick: function (x) { why = x; api.changed(); } });
       api.info("오른쪽 판의 ‘사람 관찰’과 전체 기록을 견주어 보세요. 나머지는 대부분 박물관·연구 기관의 표본 기록입니다. " + SRC
@@ -77,11 +95,30 @@ window.sthLab({
     task: "두 기간의 한 해 평균을 구해 최근 ÷ 이전 을 슬라이더로 맞추세요(± 1 배).",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, g = 1;
-      function draw() {
-        chart(H, ctx, W, cv.H, 2, null);
-        H.rows(ctx, 680, 40, [["2017~2021 (5년) 합", H1 + " 건"], ["2022~2025 (4년) 합", H2 + " 건"], ["내 답 (몇 배)", g.toFixed(0) + " 배", null, true]], 60);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT;
+        gbif19(ctx, W, cv.H, 2, null);
+        SP.card(ctx, 664, 14, 222, cv.H - 28, "사람 관찰 기록", [["2017~2021 (5년) 합", H1 + " 건"], ["2022~2025 (4년) 합", H2 + " 건", LT.green], null, ["내 답 (몇 배)", g.toFixed(0) + " 배", LT.blue]], null, { top: 60, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+      function gbif19(ctx, W, CH, i, pick) {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 644, CH - 20, i === 2 ? "사람이 관찰해 올린 반딧불이 기록 수" : "반딧불이 기록 수 (전체)");
+        var x0 = 60, x1 = 640, y0 = 46, y1 = CH - 36, mx = Math.max.apply(null, Y.map(function (r) { return r[i]; })) * 1.1 || 1, DX = 5, DY = -4;
+        function X(yy) { return x0 + (yy - 2004.5) / 21 * (x1 - x0); }
+        function Yv(v) { return y1 - v / mx * (y1 - y0); }
+        ctx.strokeStyle = LT.grid; ctx.lineWidth = 1;
+        [0, 0.5, 1].forEach(function (f) { var vv = mx / 1.1 * f; ctx.beginPath(); ctx.moveTo(x0, Yv(vv)); ctx.lineTo(x1, Yv(vv)); ctx.stroke(); K.t(ctx, String(Math.round(vv)), x0 - 6, Yv(vv) + 4, { s: 10, w: "600", a: "right", c: LT.mute }); });
+        [2005, 2010, 2015, 2020, 2025].forEach(function (yy) { K.t(ctx, String(yy), X(yy), y1 + 15, { s: 10, w: "600", a: "center", c: LT.mute }); });
+        Y.forEach(function (r) {
+          var on = pick === r[0], c = SP.mt(on ? "yellow" : (i === 2 ? "green" : "blue")), xx = X(r[0]) - 9, top = Yv(r[i]);
+          SP.poly(ctx, [{ x: xx + 18, y: y1 }, { x: xx + 18 + DX, y: y1 + DY }, { x: xx + 18 + DX, y: top + DY }, { x: xx + 18, y: top }], c[2]);
+          SP.poly(ctx, [{ x: xx, y: top }, { x: xx + 18, y: top }, { x: xx + 18 + DX, y: top + DY }, { x: xx + DX, y: top + DY }], c[0]);
+          ctx.fillStyle = c[1]; ctx.fillRect(xx, top, 18, y1 - top);
+        });
+        K.line(ctx, { x: x0, y: y1 }, { x: x1, y: y1 }, LT.line, 1.5);
+      }
+    cv.canvas._redraw = draw;
       api.slider({ label: "최근 한 해 평균은 이전의 몇 배", min: 1, max: 30, step: 1, value: 1, fmt: function (x) { return x + " 배"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
       api.info("한 해 평균 = 합 ÷ 햇수. " + SRC);
       draw();

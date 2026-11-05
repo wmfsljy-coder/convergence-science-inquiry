@@ -23,24 +23,32 @@ window.sthLab({
       function spec() { return type === "hi" ? { r: 60, c: 25, t: "고성능" } : { r: 20, c: 6, t: "보급형" }; }
       function cover() { var s = spec(); return Math.min(1, n * 2 * s.r / L); }
       function cost() { return n * spec().c; }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var s = spec(), x0 = 40, x1 = 580, y = 130;
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, s = spec(), x0 = 40, x1 = 580, y = 150, cv_ = cover(), co = cost();
         function X(m) { return x0 + m / L * (x1 - x0); }
-        H.text(ctx, "하수관 1,200 m", x0, 40, { s: 12, w: "800", c: H.v("--mist") });
-        H.box(ctx, x0, y - 10, x1 - x0, 20, H.v("--rose"), 0.28);
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH, { x: 310, y: 236, rx: 290, ry: 14 });
+        /* 땅을 잘라 본 블록 + 하수관(원통) + 센서 */
+        var DX = 22, DY = -16;
+        SP.poly(ctx, [{ x: x0 - 20, y: 74 }, { x: x1 + 20, y: 74 }, { x: x1 + 20 + DX, y: 74 + DY }, { x: x0 - 20 + DX, y: 74 + DY }], "#9cc46e");
+        var gg = ctx.createLinearGradient(0, 74, 0, 216); gg.addColorStop(0, "#b08a5e"); gg.addColorStop(1, "#6e4f32"); ctx.fillStyle = gg; ctx.fillRect(x0 - 20, 74, x1 - x0 + 40, 142);
+        SP.poly(ctx, [{ x: x1 + 20, y: 74 }, { x: x1 + 20 + DX, y: 74 + DY }, { x: x1 + 20 + DX, y: 216 + DY }, { x: x1 + 20, y: 216 }], "#5a3f28");
+        [[120, 74], [300, 74], [470, 74]].forEach(function (b) { SP.poly(ctx, [{ x: b[0], y: b[1] }, { x: b[0] + 50, y: b[1] }, { x: b[0] + 50, y: b[1] - 30 }, { x: b[0], y: b[1] - 30 }], "#e9ecf2"); SP.poly(ctx, [{ x: b[0], y: b[1] - 30 }, { x: b[0] + 50, y: b[1] - 30 }, { x: b[0] + 60, y: b[1] - 38 }, { x: b[0] + 10, y: b[1] - 38 }], "#c5cedb"); });
+        var pg = ctx.createLinearGradient(0, y - 14, 0, y + 14); pg.addColorStop(0, "#c9d0da"); pg.addColorStop(.4, "#f1f3f6"); pg.addColorStop(1, "#7d8796");
+        ctx.fillStyle = pg; ctx.fillRect(x0, y - 14, x1 - x0, 28);
+        ctx.fillStyle = "rgba(224,49,49,.25)"; ctx.fillRect(x0, y - 14, x1 - x0, 28);
         for (var i = 0; i < n; i++) {
-          var p = (i + 0.5) * L / n;
-          H.box(ctx, X(Math.max(0, p - s.r)), y - 10, X(Math.min(L, p + s.r)) - X(Math.max(0, p - s.r)), 20, H.v("--green"), 0.45);
-          H.dot(ctx, X(p), y, n > 30 ? 3 : 5, H.v("--brand"));
+          var p = (i + 0.5) * L / n, a1 = X(Math.max(0, p - s.r)), b1 = X(Math.min(L, p + s.r));
+          ctx.fillStyle = "rgba(15,159,118,.55)"; ctx.fillRect(a1, y - 14, b1 - a1, 28);
+          SP.poly(ctx, [{ x: X(p) - 5, y: y - 14 }, { x: X(p) + 5, y: y - 14 }, { x: X(p) + 5, y: y - 24 }, { x: X(p) - 5, y: y - 24 }], "#1c2230");
+          ctx.fillStyle = "#1c7ed6"; ctx.beginPath(); ctx.arc(X(p), y - 19, n > 30 ? 1.5 : 2.5, 0, 6.2832); ctx.fill();
         }
-        H.text(ctx, "0 m", x0, y + 36, { s: 10.5, w: "700", a: "center", c: H.v("--mist") });
-        H.text(ctx, "1,200 m", x1, y + 36, { s: 10.5, w: "700", a: "center", c: H.v("--mist") });
-        H.text(ctx, "초록: 감시되는 구간   분홍: 빈틈", x0, 215, { s: 11.5, w: "700", c: H.v("--mist") });
-        var cv_ = cover(), co = cost();
-        H.rows(ctx, 640, 40, [["센서", s.t + " × " + n + "개"], ["감시 비율", (cv_ * 100).toFixed(0) + "%", cv_ >= 1 ? "--green-700" : "--rose-700", true], ["총비용", co + "만 원", co <= 200 ? "--green-700" : "--rose-700", true]], 62);
+        ctx.fillStyle = "#5c6b8a"; ctx.beginPath(); ctx.ellipse(x0, y, 7, 14, 0, 0, 6.2832); ctx.fill(); ctx.fillStyle = "#2a303b"; ctx.beginPath(); ctx.ellipse(x0, y, 4, 10, 0, 0, 6.2832); ctx.fill();
+        K.t(ctx, "0 m", x0, y + 34, { s: 10.5, w: "800", a: "center", c: "#fff4dc" });
+        K.t(ctx, "1,200 m", x1, y + 34, { s: 10.5, w: "800", a: "center", c: "#fff4dc" });
+        K.pill(ctx, "하수관 1,200 m · 초록 = 감시되는 구간 · 분홍 = 빈틈", 16, CH - 12, { s: 11, c: K.C.ink });
+        SP.card(ctx, 620, 14, 266, CH - 28, "땅속 하수관 감시 센서", [["센서", s.t + " × " + n + "개"], ["감시 비율", (cv_ * 100).toFixed(0) + "%", cv_ >= 1 ? LT.green : LT.red], ["총비용", co + "만 원", co <= 200 ? LT.green : LT.red]], [cv_ >= 1 && co <= 200 ? "빈틈없이 · 예산 안" : "빈틈이나 예산 초과", cv_ >= 1 && co <= 200], { top: 60, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.seg({ label: "센서 종류", value: "hi", options: [{ v: "hi", t: "고성능 · ±60 m · 25만 원" }, { v: "lo", t: "보급형 · ±20 m · 6만 원" }], onPick: function (x) { type = x; draw(); api.changed(); } });
       api.slider({ label: "센서 개수", min: 1, max: 40, step: 1, value: 6, fmt: function (x) { return x + "개"; }, onInput: function (x) { n = Math.round(x); draw(); api.changed(); } });
       api.info("센서는 관을 따라 같은 간격으로 놓입니다. 한 개가 감시하는 길이는 반경의 두 배입니다.");
@@ -73,25 +81,27 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, a = 5, K = 10;
       function fw(k) { return 1 - Math.pow(1 - a / 100, k); }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 580, y0 = 30, y1 = 225, bw = (x1 - x0) / 20;
+        function draw() {
+        var KT = window.sthKit, SP = window.sthSP19, LT = KT.LT, CH = cv.H, f = fw(K), ok = f <= 0.05 + 1e-9;
+        ctx.clearRect(0, 0, W, CH); KT.studio(ctx, 0, 0, W, CH);
+        KT.card(ctx, 10, 10, 600, CH - 20, "적어도 하나 거짓 발견될 확률");
+        var x0 = 60, x1 = 580, y0 = 50, y1 = 226, bw = (x1 - x0) / 20, DX = 6, DY = -5;
         function Y(p) { return y1 - p / 0.7 * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
+        ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
         for (var k = 1; k <= 20; k++) {
-          var p = Math.min(0.7, fw(k));
-          H.box(ctx, x0 + (k - 1) * bw + 3, Y(p), bw - 6, y1 - Y(p), k === K ? H.v("--brand") : H.v("--mist"), k === K ? 0.9 : 0.35);
-          if (k % 5 === 0 || k === 1) H.text(ctx, String(k), x0 + (k - 0.5) * bw, y1 + 16, { s: 10.5, w: "700", a: "center", c: H.v("--mist") });
+          var p = Math.min(0.7, fw(k)), xx = x0 + (k - 1) * bw + 3, w = bw - 9, top = Y(p), c = SP.mt(k === K ? "blue" : "#b8c2d0");
+          SP.poly(ctx, [{ x: xx + w, y: y1 }, { x: xx + w + DX, y: y1 + DY }, { x: xx + w + DX, y: top + DY }, { x: xx + w, y: top }], c[2]);
+          SP.poly(ctx, [{ x: xx, y: top }, { x: xx + w, y: top }, { x: xx + w + DX, y: top + DY }, { x: xx + DX, y: top + DY }], c[0]);
+          ctx.fillStyle = c[1]; ctx.fillRect(xx, top, w, y1 - top);
+          if (k % 5 === 0 || k === 1) KT.t(ctx, String(k), x0 + (k - 0.5) * bw, y1 + 16, { s: 10.5, w: "700", a: "center", c: LT.mute });
         }
-        H.dash(ctx, x0, Y(0.05), x1, Y(0.05), H.v("--rose"), 1.5);
-        H.text(ctx, "5%", x0 - 8, Y(0.05) + 4, { s: 10.5, w: "800", a: "right", c: H.v("--rose-700") });
-        H.text(ctx, "50%", x0 - 8, Y(0.5) + 4, { s: 10.5, w: "700", a: "right", c: H.v("--mist") });
-        H.text(ctx, "분석한 지표 수", x1, y1 + 34, { s: 11, w: "700", a: "right", c: H.v("--mist") });
-        H.text(ctx, "적어도 하나 거짓 발견될 확률", x0 + 6, y0 - 10, { s: 11, w: "700", c: H.v("--mist") });
-        var f = fw(K);
-        H.rows(ctx, 640, 50, [["지표 하나의 기준", a.toFixed(1) + "%"], ["지표 10가지 분석", "10개"], ["하나라도 걸릴 확률", (f * 100).toFixed(1) + "%", f <= 0.05 + 1e-9 ? "--green-700" : "--rose-700", true]], 58);
+        KT.line(ctx, { x: x0, y: Y(0.05) }, { x: x1, y: Y(0.05) }, LT.red, 1.6, [5, 4]);
+        KT.t(ctx, "5%", x0 - 8, Y(0.05) + 4, { s: 10.5, w: "900", a: "right", c: LT.red });
+        KT.t(ctx, "50%", x0 - 8, Y(0.5) + 4, { s: 10.5, w: "700", a: "right", c: LT.mute });
+        KT.t(ctx, "분석한 지표 수", x1, y1 + 32, { s: 11, w: "700", a: "right", c: LT.mute });
+        SP.card(ctx, 624, 14, 262, CH - 28, "지표 10가지를 함께 볼 때", [["지표 하나의 기준", a.toFixed(1) + "%"], ["지표 수", "10개"], ["하나라도 걸릴 확률", (f * 100).toFixed(1) + "%", ok ? LT.green : LT.red]], [ok ? "전체 5% 이하로 지켰다" : "우연히 걸릴 확률이 크다", ok], { top: 60, gap: 30 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.slider({ label: "지표 하나의 유의 기준", min: 0.1, max: 5, step: 0.1, value: 5, fmt: function (x) { return x.toFixed(1) + "%"; }, onInput: function (x) { a = Math.round(x * 10) / 10; draw(); api.changed(); } });
       api.info("막대는 효과가 전혀 없을 때, 분석한 지표 가운데 적어도 하나가 우연히 ‘효과 있음’으로 나올 확률입니다.");
       draw();
@@ -124,27 +134,21 @@ window.sthLab({
       function sd() { return tr === "yes" ? 12 : 30; }
       function err() { return sd() / Math.sqrt(n); }
       function hours() { return n * (tr === "yes" ? 2 : 1); }
-      function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 580, y0 = 30, y1 = 225;
-        function X(k) { return x0 + (k - 1) / 59 * (x1 - x0); }
-        function Y(e) { return y1 - Math.min(e, 32) / 32 * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        [["no", 30], ["yes", 12]].forEach(function (c) {
-          var pts = []; for (var k = 1; k <= 60; k++) pts.push([X(k), Y(c[1] / Math.sqrt(k))]);
-          H.line(ctx, pts, c[0] === tr ? H.v("--brand") : H.v("--mist"), c[0] === tr ? 3 : 1.5);
-        });
-        H.text(ctx, "교육 없음", X(8), Y(30 / Math.sqrt(8)) - 10, { s: 10.5, w: "800", c: tr === "no" ? H.v("--brand") : H.v("--mist") });
-        H.text(ctx, "교육 받음", X(3) + 6, Y(12 / Math.sqrt(3)) + 16, { s: 10.5, w: "800", c: tr === "yes" ? H.v("--brand") : H.v("--mist") });
-        H.dash(ctx, x0, Y(5), x1, Y(5), H.v("--rose"), 1.5);
-        H.text(ctx, "5%", x0 - 8, Y(5) + 4, { s: 10.5, w: "800", a: "right", c: H.v("--rose-700") });
-        if (n <= 60) H.dot(ctx, X(n), Y(err()), 6, H.v("--amber"));
-        H.text(ctx, "참여 인원", x1, y1 + 18, { s: 11, w: "700", a: "right", c: H.v("--mist") });
-        H.text(ctx, "평균값의 오차(%)", x0 + 6, y0 - 10, { s: 11, w: "700", c: H.v("--mist") });
-        var e = err(), h = hours();
-        H.rows(ctx, 640, 40, [["조사단", (tr === "yes" ? "교육 받음" : "교육 없음") + " · " + n + "명"], ["평균값의 오차", e.toFixed(1) + "%", e <= 5 + 1e-9 ? "--green-700" : "--rose-700", true], ["봉사 시간", h + "시간", h <= 40 ? "--green-700" : "--rose-700", true]], 62);
+        function draw() {
+        var K = window.sthKit, SP = window.sthSP19, LT = K.LT, CH = cv.H, e = err(), h = hours(), ok = e <= 5 + 1e-9 && h <= 40;
+        ctx.clearRect(0, 0, W, CH); K.studio(ctx, 0, 0, W, CH);
+        K.card(ctx, 10, 10, 600, CH - 20, "참여 인원과 평균값의 오차(%)");
+        var g = SP.chart(ctx, { x: 16, y: 48, w: 586, h: CH - 62, x0: 1, x1: 60, y0: 0, y1: 32, xt: 6, yt: 4, xf: function (v) { return Math.round(v) + "명"; }, yf: function (v) { return v + "%"; }, pl: 40 });
+        [["no", 30], ["yes", 12]].forEach(function (c) { var pts = []; for (var k = 1; k <= 60; k++) pts.push([k, Math.min(32, c[1] / Math.sqrt(k))]); SP.plot(ctx, g, pts, c[0] === tr ? LT.blue : "#b8c2d0", { w: c[0] === tr ? 3 : 1.8, glow: false }); });
+        SP.lbl(ctx, "교육 없음", g.X(8) + 6, g.Y(30 / Math.sqrt(8)) - 8, { s: 10.5, c: tr === "no" ? LT.blue : LT.mute });
+        SP.lbl(ctx, "교육 받음", g.X(3) + 8, g.Y(12 / Math.sqrt(3)) + 16, { s: 10.5, c: tr === "yes" ? LT.blue : LT.mute });
+        K.line(ctx, { x: g.L, y: g.Y(5) }, { x: g.R, y: g.Y(5) }, LT.red, 1.6, [5, 4]);
+        SP.lbl(ctx, "5%", g.R - 4, g.Y(5) - 6, { s: 10.5, a: "right", c: LT.red });
+        if (n <= 60) { ctx.fillStyle = ok ? LT.green : LT.orange; ctx.beginPath(); ctx.arc(g.X(n), g.Y(Math.min(32, e)), 6.5, 0, 6.2832); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke(); }
+        for (var q = 0; q < Math.min(n, 24); q++) { var hx = 650 + (q % 12) * 19, hy = 46 + Math.floor(q / 12) * 26; ctx.fillStyle = tr === "yes" ? "#0f9f76" : "#7d8fc0"; ctx.beginPath(); ctx.roundRect(hx - 5, hy, 10, 12, [5, 5, 2, 2]); ctx.fill(); K.planet(ctx, hx, hy - 4, 4, "#f6d2b4", "#b47a50"); }
+        SP.card(ctx, 624, 104, 262, CH - 116, null, [["조사단", (tr === "yes" ? "교육 받음" : "교육 없음") + " · " + n + "명"], ["평균값의 오차", e.toFixed(1) + "%", e <= 5 + 1e-9 ? LT.green : LT.red], ["봉사 시간", h + "시간", h <= 40 ? LT.green : LT.red]], null, { top: 30, gap: 28 });
       }
-      cv.canvas._redraw = draw;
+    cv.canvas._redraw = draw;
       api.seg({ label: "사전 교육", value: "no", options: [{ v: "no", t: "교육 없음 · 오차 30%" }, { v: "yes", t: "교육 1시간 · 오차 12%" }], onPick: function (x) { tr = x; draw(); api.changed(); } });
       api.slider({ label: "참여 인원", min: 1, max: 60, step: 1, value: 10, fmt: function (x) { return x + "명"; }, onInput: function (x) { n = Math.round(x); draw(); api.changed(); } });
       api.info("평균값의 오차 = 한 사람의 오차 ÷ √(인원). 곡선 위의 점이 지금 조사단입니다.");
