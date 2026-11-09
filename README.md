@@ -2,15 +2,15 @@
 
 학생이 직접 조작하며 배우는 **이야기형 인터랙티브 단원** 모음입니다. 브라우저만 있으면 되고, 설치·회원 가입이 없습니다.
 
-- 바로 열기: https://wmfsljy-coder.github.io/convergence-science-inquiry/
+- 바로 열기: https://wmfsljy-coder.github.io/convergence-science-inquiry-t8ryq8/
 
 ## 단원
 
 | 단원 | 제목 | 이야기(탭) | 수준별 문제 | 응용 실험실 |
 |---|---|---|---|---|
-| [1](https://wmfsljy-coder.github.io/convergence-science-inquiry/1/) | 융합과학 탐구의 이해 | 융합과학의 역할과 유용성 · 다양한 탐구 과정의 특성 · 데이터의 이해와 활용 · 디지털 탐구 도구의 이해와 활용 | ○ | ○ |
-| [2](https://wmfsljy-coder.github.io/convergence-science-inquiry/2/) | 융합과학 탐구의 과정 | 문제 발견과 방법 설계 · 데이터 수집과 시각화 · 가설과 모형의 검증 · 결론 도출·평가와 과학적 의사소통 | ○ | ○ |
-| [3](https://wmfsljy-coder.github.io/convergence-science-inquiry/3/) | 융합과학 탐구의 전망 | 미래 사회와 융합과학기술 · 사회적 난제 해결 · 융합과학 탐구와 윤리 · 사회 문제와 시민참여 | ○ | ○ |
+| [1](https://wmfsljy-coder.github.io/convergence-science-inquiry-t8ryq8/1/) | 융합과학 탐구의 이해 | 융합과학의 역할과 유용성 · 다양한 탐구 과정의 특성 · 데이터의 이해와 활용 · 디지털 탐구 도구의 이해와 활용 | ○ | ○ |
+| [2](https://wmfsljy-coder.github.io/convergence-science-inquiry-t8ryq8/2/) | 융합과학 탐구의 과정 | 문제 발견과 방법 설계 · 데이터 수집과 시각화 · 가설과 모형의 검증 · 결론 도출·평가와 과학적 의사소통 | ○ | ○ |
+| [3](https://wmfsljy-coder.github.io/convergence-science-inquiry-t8ryq8/3/) | 융합과학 탐구의 전망 | 미래 사회와 융합과학기술 · 사회적 난제 해결 · 융합과학 탐구와 윤리 · 사회 문제와 시민참여 | ○ | ○ |
 
 ## 한 단원의 구성
 
@@ -24,8 +24,8 @@
 ## 내 학교에서 쓰기
 
 1. 이 저장소를 **Fork** 하거나 *Use this template* 으로 복사합니다.
-2. Settings → Pages → Branch 를 `main` / `(root)` 로 두면 몇 분 뒤 `https://<내 계정>.github.io/convergence-science-inquiry/` 에 열립니다.
-3. **우리 반 공유**를 쓰려면 `assets/share-config.js` 의 주소를 내 Apps Script 웹 앱 주소로 바꿉니다(만드는 법: science-teacher-hub 의 [GUIDE.md](https://github.com/wmfsljy-coder/science-teacher-hub/blob/main/GUIDE.md)). 바꾸지 않으면 공유 기능만 꺼지고 나머지는 그대로 됩니다.
+2. Settings → Pages → Branch 를 `main` / `(root)` 로 두면 몇 분 뒤 `https://<내 계정>.github.io/convergence-science-inquiry-t8ryq8/` 에 열립니다.
+3. **우리 반 공유**를 쓰려면 `assets/share-config.js` 의 주소를 내 Apps Script 웹 앱 주소로 바꿉니다(만드는 법: science-teacher-hub 의 [GUIDE.md](https://github.com/wmfsljy-coder/science-teacher-hub-qtrqwc/blob/main/GUIDE.md)). 바꾸지 않으면 공유 기능만 꺼지고 나머지는 그대로 됩니다.
 4. 반 목록을 고르게 하려면 `assets/share-config.js` 에 `window.STH_CLASSES = [{ v: "1-1", t: "1학년 1반" }, …]` 를 적습니다.
 
 ## 라이선스
